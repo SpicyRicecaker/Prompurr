@@ -1,0 +1,29 @@
+{
+  "name": "prompurr",
+  "version": "1.0.0",
+  "description": "A progress-focused adaptive todolist!",
+  "main": "index.js",
+  "scripts": {
+    "test": "start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpicyRicecaker/Prompurr.git"
+  },
+  "keywords": [
+    "prompurr"
+  ],
+  "author": "Andy Li",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SpicyRicecaker/Prompurr/issues"
+  },
+  "homepage": "https://github.com/SpicyRicecaker/Prompurr#readme",
+  "devDependencies": {
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "prettier": "2.0.5"
+  }
+}

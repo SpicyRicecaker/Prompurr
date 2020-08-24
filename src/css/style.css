@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('/src/fonts/lemonmilk-rg.otf');
+}
+@font-face {
+  font-family: 'Coolvetica';
+  src: url('/src/fonts/coolvetica-rg.ttf');
+}
+body {
+  font-family: 'Open Sans', sans-serif;
+}

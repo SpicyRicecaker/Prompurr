@@ -47,3 +47,16 @@ element['todo-input'].addEventListener('keydown', function createTodoItem (e) {
   }
 });
 
+document.getElementsByClassName('todo-item-bullet')[0].addEventListener('mouseover', function showTimes(){
+  this.innerHTML = '&times;';
+});
+
+document.getElementsByClassName('todo-item-bullet')[0].addEventListener('mouseout', function showBull(){
+  this.innerHTML = '&bull;';
+});
+
+document.getElementsByClassName('todo-item-bullet')[0].addEventListener('click', function deleteTodoItem(){
+  this.parentNode.remove();
+});
+
+

@@ -1,4 +1,11 @@
-const elementIds = ['todo-add', 'todo-input', 'todo-area'];
+const elementIds = [
+  'todo-add',
+  'todo-input',
+  'todo-area',
+  'todo-item-area',
+  'todo-item-template',
+  'todo-item-list',
+];
 const element = [];
 
 // Builds a lookup cache for faster element lookups
@@ -33,30 +40,41 @@ element['todo-input'].addEventListener('focusout', function closeConsole() {
 });
 
 // Defines what happens when we press 'enter' in the console
-element['todo-input'].addEventListener('keydown', function createTodoItem (e) {
-  if(e.key === 'Enter'){
-    // Create a new div based on the current values
-    const t = document.createElement('div');
-    t.setAttribute('class', 'todo-item');
-    t.innerHTML = this.value;
+element['todo-input'].addEventListener('keydown', function createTodoItem(e) {
+  if (e.key === 'Enter') {
+    // Create a new div based on the current values via template
+    const tmp = document.importNode(
+      element['todo-item-template'].content,
+      true,
+    );
+    // Select the span element inside and set it equal to the console
+    tmp.querySelector('.todo-item-value').innerHTML = this.value;
 
     // Clear console
     element['todo-input'].value = '';
     // Append div to document
-    element['todo-area'].appendChild(t);
+    element['todo-item-list'].appendChild(tmp);
   }
 });
 
-document.getElementsByClassName('todo-item-bullet')[0].addEventListener('mouseover', function showTimes(){
-  this.innerHTML = '&times;';
+// Event delegation to todo-item-area
+// On click, remove the item
+element['todo-item-list'].addEventListener('click', function removeTodoItem(e) {
+  if (e.target.nodeName === 'BUTTON') {
+    e.target.parentNode.remove();
+  }
 });
 
-document.getElementsByClassName('todo-item-bullet')[0].addEventListener('mouseout', function showBull(){
-  this.innerHTML = '&bull;';
+// On hover, show x
+element['todo-item-list'].addEventListener('mouseover', function showTimes(e) {
+  if (e.target.nodeName === 'BUTTON') {
+    e.target.innerHTML = '&times;';
+  }
 });
 
-document.getElementsByClassName('todo-item-bullet')[0].addEventListener('click', function deleteTodoItem(){
-  this.parentNode.remove();
+// On not hovering, show bullet
+element['todo-item-list'].addEventListener('mouseout', function showBull(e) {
+  if (e.target.nodeName === 'BUTTON') {
+    e.target.innerHTML = '&bull;';
+  }
 });
-
-

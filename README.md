@@ -7,7 +7,28 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 
 # Progress Log
 
-[0824 MON](#0824-MON)
+[0824 MON](#0824-MON)  
+[0827 THU](#0827-THU)
+
+## 0827 THU
+
+### Ideas for expansion
+
+- Syntax highlighting for terms like `aug 27`, `827`, `@`, `11:59pm`
+- Call some sort of dictionary that highlights *verbs*
+- Basic timeline with time as current location and a single chain of objectives
+- Save todo list into prompurr.data file
+
+### Learned
+
+- Finally using `.scss` to compile into `.css`, added `sass-compile.bat` which basically does this live while running
+- Event Delegation
+- Template Tag
+  - Need to call `.content` if you don't want to copy the template itself as well
+- Event Delegation
+  - Add event for multiple elements once with support for adding new children
+  - Basically just addEventListener to the parent element, then make use of the `.target` attribute
+  - Check target identity using `.nodeName`
 
 ## 0824 MON
 

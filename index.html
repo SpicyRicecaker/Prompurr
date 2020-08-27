@@ -7,6 +7,14 @@
   <link rel='stylesheet' type='text/css' href='src/css/style.css' />
 </head>
 <body>
+  <template id='todo-item-template'>
+    <div class='todo-item'>
+      <!-- This is basically the desired way we want the button to look, but we don't want href because it reloads the page -->
+      <!-- <a href=''>&bull;</a> -->
+      <button class='todo-item-bullet'>&bull;</button>
+      <span class='todo-item-value'></span>
+    </div>
+  </template>
   <div id='title-bar'>
     <a href='' id='title-link'>Prompurr</a>
   </div>
@@ -14,11 +22,7 @@
     <div id='todo-area'>
       <button id='todo-add'>+</button>
       <input type='text' id='todo-input'>
-      <div class='todo-item'>
-        <!-- This is basically the desired way we want the button to look, but we don't want href because it reloads the page -->
-        <!-- <a href=''>&bull;</a> -->
-        <button class='todo-item-bullet'>&bull;</button>
-        <span>Clean the dishes</span>
+      <div id='todo-item-list'>
       </div>
     </div>
     <div id='path-area'>

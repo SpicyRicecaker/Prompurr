@@ -1,27 +1,30 @@
+$munchingOrange: #f1c232;
+
 @font-face {
-  font-family: "Lemon Milk";
-  src: url("/src/fonts/lemonmilk-rg.otf");
+  font-family: 'Lemon Milk';
+  src: url('/src/fonts/lemonmilk-rg.otf');
 }
 @font-face {
-  font-family: "Coolvetica";
-  src: url("/src/fonts/coolvetica-rg.ttf");
+  font-family: 'Coolvetica';
+  src: url('/src/fonts/coolvetica-rg.ttf');
 }
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 #title-link {
   /* We'll use black/white/red/orange since rgb is monopolized by Google lol*/
   text-decoration: none;
-  font-family: "Lemon Milk";
+  font-family: 'Lemon Milk';
   font-size: 1em;
   color: #434343;
 }
 
 #title-link:hover {
-  color: #f1c232;
+  color: $munchingOrange;
 }
 
 #title-bar {
@@ -42,7 +45,7 @@ body {
 #todo-add {
   /* Size of box */
   width: 90%;
-  font-family: "Fira Code", monospace;
+  font-family: 'Fira Code', monospace;
   padding: 1em;
   /* Apparently input and button use different box-sizing so*/
   box-sizing: content-box;
@@ -55,13 +58,13 @@ body {
 
 #todo-add:hover {
   cursor: pointer;
-  color: #f1c232;
+  color: $munchingOrange;
 }
 
 #todo-input {
   /* Size of box true*/
   width: 90%;
-  font-family: "Fira Code", monospace;
+  font-family: 'Fira Code', monospace;
   padding: 1em;
   border: none;
   outline: none;
@@ -71,7 +74,7 @@ body {
 
 .todo-item {
   width: 90%;
-  font-family: "Fira Code", monospace;
+  font-family: 'Fira Code', monospace;
   padding: 1em;
   border: none;
   outline: none;
@@ -80,11 +83,11 @@ body {
 
 #wrapper {
   display: grid;
-  grid-template: "todo-area panel-area" auto/minmax(0, 1fr) minmax(0, 1fr);
+  grid-template:
+    'todo-area panel-area' auto
+    / minmax(0, 1fr) minmax(0, 1fr);
 }
 
 #wrapper > div {
   /* background-color: #efefef; */
 }
-
-/*# sourceMappingURL=style.css.map */

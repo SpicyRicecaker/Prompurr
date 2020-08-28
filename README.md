@@ -14,13 +14,19 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 
 ### Ideas for expansion
 
+- Actual syntax for todo item will just be something like `Do this Aug 21 11:59p`
+- But the actual list item will turn into `by today at midnight` or `by tomorrow` or `in 3 days`.
+- For now we'll just have a `ol` for the path, nothing fancy, but it's gotta update live
 - Syntax highlighting for terms like `aug 27`, `827`, `@`, `11:59pm`
-- Call some sort of dictionary that highlights *verbs*
+- Call some sort of dictionary that highlights _verbs_
 - Basic timeline with time as current location and a single chain of objectives
 - Save todo list into prompurr.data file
 
 ### Learned
 
+- Made first stack overflow post [here](https://stackoverflow.com/a/63627476/11742422), can finally upvote
+- Installed _Powershell 7_ so we can easily run commands in parallel with the `&` symbol. Finished setting up `npm run watch` command to watch both `.ts` and `.scss` files. Courtesy of [this](https://stackoverflow.com/a/62578742/11742422) stack overflow post
+- Typescript!!!
 - Finally using `.scss` to compile into `.css`, added `sass-compile.bat` which basically does this live while running
 - Event Delegation
 - Template Tag

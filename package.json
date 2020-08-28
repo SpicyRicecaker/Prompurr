@@ -4,7 +4,8 @@
   "description": "A progress-focused adaptive todolist!",
   "main": "index.js",
   "scripts": {
-    "test": "start"
+    "test": "start",
+    "watch": "tsc -w & sass --watch .\\src\\scss\\style.scss .\\src\\css\\style.css"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,13 @@
   },
   "homepage": "https://github.com/SpicyRicecaker/Prompurr#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.10.1",
+    "@typescript-eslint/parser": "^3.10.1",
     "eslint": "^7.7.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
-    "prettier": "2.0.5"
+    "prettier": "2.0.5",
+    "typescript": "^4.0.2"
   }
 }

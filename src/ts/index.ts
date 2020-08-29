@@ -22,18 +22,16 @@ function init() {
 
 init();
 
-function openConsole(){
-    // Replace button with console
-    element.get('todo-add').style.display = 'none';
-    element.get('todo-input').style.display = 'block';
-    // Focus console
-    element.get('todo-input').focus();
+function openConsole() {
+  // Replace button with console
+  element.get('todo-add').style.display = 'none';
+  element.get('todo-input').style.display = 'block';
+  // Focus console
+  element.get('todo-input').focus();
 }
 
 // Defines default add-todo clicked button behavior true
-element
-  .get('todo-add')
-  .addEventListener('click', ()=>openConsole());
+element.get('todo-add').addEventListener('click', () => openConsole());
 
 function handleFocus() {
   // Replace console with button

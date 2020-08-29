@@ -26,9 +26,7 @@ function openConsole() {
     element.get('todo-input').focus();
 }
 // Defines default add-todo clicked button behavior true
-element
-    .get('todo-add')
-    .addEventListener('click', () => openConsole());
+element.get('todo-add').addEventListener('click', () => openConsole());
 function handleFocus() {
     // Replace console with button
     element.get('todo-input').style.display = 'none';

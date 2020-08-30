@@ -1,9 +1,13 @@
+// let pageVisible = true;
+let dateToday: Date;
+
 const elementIds: string[] = [
   'todo-add',
   'todo-input',
   'todo-area',
   'todo-item-area',
   'todo-item-template',
+  'calendar-template',
   'todo-item-list',
 ];
 const element = new Map<string, HTMLElement>();
@@ -16,8 +20,77 @@ function buildElementCache() {
   }
 }
 
+function updateDate() {
+  dateToday = new Date();
+}
+
+// Generates a calendar (+6 months soon) based off today's date
+function generateCalendar(someDate: Date) {
+  // Define an array of months
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  // First create a calendar skeleton from the template
+  const tmp = document.importNode(
+    (element.get('calendar-template') as HTMLTemplateElement).content,
+    true,
+  );
+  const table = tmp.querySelector('.calendar-table') as HTMLTableElement;
+  // Collect the year, month, date currently
+  const y = someDate.getFullYear();
+  const m = someDate.getMonth();
+  const d = someDate.getDate();
+  // Get the first day, code inspired by
+  // https://stackoverflow.com/questions/13571700/get-first-and-last-date-of-current-month-with-javascript-or-jquery
+  const firstDay = new Date(y, m, 1).getDay();
+  const lastDate = new Date(y, m + 1, 0).getDate();
+  // First set the name of the month
+  tmp.querySelector('.calendar-header').innerHTML = `${monthNames[m]}`;
+  // Now we can start filling in our table
+  let dayCount = 1;
+  // The first loop is outside of the main for loop
+  // because we want to start at the specific day of the week
+  // of the first day of the month
+  // keep in mind that the first row we're doing is 1 not 0 because
+  // 1 is the day of the week
+  // Take care of the middle rows
+  for (let a = 1; a < 7; a += 1) {
+    for (let b = 0; b < 7; b += 1) {
+      // If we're in the first row and we're not at the first day yet
+      if (a === 1 && b < firstDay) {
+        table.rows[a].cells[b].innerHTML = '&nbsp;';
+      }
+      // If the day count is greater than the month length just leave
+      else if (dayCount > lastDate) {
+        table.rows[a].cells[b].innerHTML = '&nbsp;';
+      } else {
+        table.rows[a].cells[b].innerHTML = dayCount.toString();
+        // Check if it's the special day, highlight it
+        if (dayCount === d) {
+          table.rows[a].cells[b].setAttribute('id', 'calendar-selected');
+        }
+        dayCount += 1;
+      }
+    }
+  }
+  document.body.appendChild(tmp);
+}
+
 function init() {
   buildElementCache();
+  updateDate();
+  generateCalendar(dateToday);
 }
 
 init();
@@ -28,6 +101,8 @@ function openConsole() {
   element.get('todo-input').style.display = 'block';
   // Focus console
   element.get('todo-input').focus();
+  // Show calendar
+  document.getElementById('calendar-container').style.display = 'block';
 }
 
 // Defines default add-todo clicked button behavior true
@@ -39,6 +114,8 @@ function handleFocus() {
   // this.value = '';
   // Probably should wipe console inner html too
   element.get('todo-add').style.display = 'block';
+  // Probably remove calendar
+  document.getElementById('calendar-container').style.display = 'none';
 }
 
 // Defines what happens when we leave the console
@@ -103,19 +180,49 @@ element
     }
   });
 
-document.addEventListener('visibilitychange', function preserveFocus() {
-  console.log('visibly out');
-  // If we're coming into focus
-  if (document.visibilityState === 'visible') {
-    // Change focus to previous focus
-    if (previousFocus !== undefined) {
-      if (previousFocus === element.get('todo-input')) {
-        openConsole();
-        previousFocus.focus();
-      }
-    }
-  } else {
-    // If going out of focus, store current focus
-    previousFocus = document.activeElement;
+function focusPrevious() {
+  if (previousFocus === element.get('todo-input')) {
+    openConsole();
+    previousFocus.focus();
   }
+}
+
+// On visibility change, update visibility state, and either store previous or focus previous el
+document.addEventListener(
+  'visibilitychange',
+  function handleVisibilityChange() {
+    // If going out of focus
+    if (document.hidden) {
+      // Update visibility state
+      // pageVisible = false;
+      // Store current focus
+      previousFocus = document.activeElement;
+    } else {
+      // If we're coming into focus
+      // Update visibility state
+      // pageVisible = true;
+      // Change focus to previous focus
+      focusPrevious();
+    }
+  },
+);
+
+// On focus, update visibility state and focus previous
+window.addEventListener('focus', function focusVisible() {
+  // pageVisible = true;
+  focusPrevious();
 });
+
+// On visibility change, update visibility state and store previous
+window.addEventListener('blur', function blurHidden() {
+  // pageVisible = false;
+  previousFocus = document.activeElement;
+});
+
+// On input to the console
+element
+  .get('todo-input')
+  .addEventListener('change', function updateSemantics() {
+    // Register/record this date
+    // Then eventually give suggestions on how to type this date
+  });

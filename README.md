@@ -9,6 +9,14 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 
 [0824 MON](#0824-MON)  
 [0827 THU](#0827-THU)
+[0829 SAT](#0829-SAT)
+
+## 0829 SAT
+
+- Probably have date/time in the center of the nav bar, that's where the clock & time will drop down from
+- Make calendar clickable & input date into console
+- Make some kind of clock to input time into console
+- Create arrow keys for the calendar, to move forward / back months
 
 ## 0827 THU
 

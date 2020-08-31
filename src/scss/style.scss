@@ -141,11 +141,15 @@ body {
   font-size: 0.8rem;
 }
 
-.calendar-table td:hover,
-.calendar-table th:hover {
+.calendar-table td:hover {
   background-color: $notGray;
   color: $munchingOrange;
   cursor: pointer;
+}
+
+.calendar-table th:hover {
+  background-color: $notGray;
+  color: $munchingOrange;
 }
 
 #calendar-selected {

@@ -10,6 +10,19 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 [0824 MON](#0824-MON)  
 [0827 THU](#0827-THU)
 [0829 SAT](#0829-SAT)
+[0830 SUN](#0830-SUN)
+
+## 0830 SUN
+
+- Switching from focusout() to just scanning the whole doc while focused, as inspired by [this](https://stackoverflow.com/a/3028037/11742422) stack overflow user
+  - Yesterday's 3+ hours of work were useless fffff
+
+### IFE
+
+- Still maybe add date/time to center of nav bar
+- Add arrow keys for calendar
+- Maybe add some clock UI
+- Then we kind finally move into data
 
 ## 0829 SAT
 

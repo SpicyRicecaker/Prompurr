@@ -12,7 +12,7 @@ const elementIds: string[] = [
   'todo-item-list',
 ];
 const element = new Map<string, HTMLElement>();
-let previousFocus;
+// let previousFocus;
 
 // Builds a lookup cache for faster element lookups
 function buildElementCache() {
@@ -20,6 +20,7 @@ function buildElementCache() {
     element.set(elementIds[i], document.getElementById(elementIds[i]));
   }
 }
+buildElementCache();
 
 function updateDate() {
   dateToday = new Date();
@@ -106,22 +107,100 @@ function generateCalendar(someDate: Date) {
         // Append the month and date to our juicy console rn
         (element.get(
           'todo-input',
-        ) as HTMLInputElement).value += `${monthNames[m]} ${el.innerHTML}`;
+        ) as HTMLInputElement).value += ` ${monthNames[m]} ${el.innerHTML}`;
       }
     }
+    // May change later
+    // KEEP FOCUSING THE TEXTBOX CHARLESTON
+    element.get('todo-input').focus();
   });
-  document.body.appendChild(calendarSection);
+  document.getElementById('todo-imp-container').appendChild(calendarSection);
 }
 
 function init() {
-  buildElementCache();
   updateDate();
   generateCalendar(dateToday);
 }
 
 init();
 
-function openConsole() {
+function handleFocus() {
+  // Replace console with button
+  element.get('todo-input').style.display = 'none';
+  element.get('todo-add').style.display = 'block';
+  // Probably remove calendar as well
+  document.getElementById('calendar-container').style.display = 'none';
+}
+
+// Hides an element when you click somewhere else.
+// Takes in an element as a parameter, then
+// sets up event listeners that are automatically disposed of
+// when the element is closed
+function hideOnBush(toHide: HTMLElement) {
+  // Defines what happens when we leave the console
+  // element
+  //   .get('todo-imp-container')
+  //   .addEventListener('focusout', function closeConsole() {
+  //     this.focus();
+  //     console.log(document.activeElement);
+  //     return;
+  //     if (!this.contains(document.activeElement)) {
+  //       window.setTimeout(handleFocus, 0);
+  //     }
+  //   });
+
+  // const isVisible = (elem) =>
+  //   !!elem &&
+  //   !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
+  // Add an event listener to the whole document
+  const scanForClicks = (e: MouseEvent) => {
+    // If the element to hide does not include the clicked element
+    if (!toHide.contains(e.target as Node)) {
+      // Hide the element/place your function here
+      handleFocus();
+
+      // Cleanup the costly document event listener
+      document.removeEventListener('click', scanForClicks);
+    }
+  };
+
+  document.addEventListener('click', scanForClicks);
+
+  // // On visibility change, update visibility state, and either store previous or focus previous el
+  // document.addEventListener(
+  //   'visibilitychange',
+  //   function handleVisibilityChange() {
+  //     // If going out of focus
+  //     if (document.hidden) {
+  //       // Update visibility state
+  //       // pageVisible = false;
+  //       // Store current focus
+  //       previousFocus = document.activeElement;
+  //     } else {
+  //       // If we're coming into focus
+  //       // Update visibility state
+  //       // pageVisible = true;
+  //       // Change focus to previous focus
+  //       focusPrevious();
+  //     }
+  //   },
+  // );
+
+  // // On focus, update visibility state and focus previous
+  // window.addEventListener('focus', function focusVisible() {
+  //   // pageVisible = true;
+  //   focusPrevious();
+  // });
+
+  // // On visibility change, update visibility state and store previous
+  // window.addEventListener('blur', function blurHidden() {
+  //   // pageVisible = false;
+  //   previousFocus = document.activeElement;
+  // });
+}
+
+function openConsole(e: MouseEvent) {
+  e.stopPropagation();
   // Replace button with console
   element.get('todo-add').style.display = 'none';
   element.get('todo-input').style.display = 'block';
@@ -129,20 +208,14 @@ function openConsole() {
   element.get('todo-input').focus();
   // Show calendar
   document.getElementById('calendar-container').style.display = 'block';
+  // Define hide behavior
+  hideOnBush(element.get('todo-imp-container'));
 }
 
 // Defines default add-todo clicked button behavior true
-element.get('todo-add').addEventListener('click', () => openConsole());
-
-function handleFocus() {
-  // Replace console with button
-  element.get('todo-input').style.display = 'none';
-  // this.value = '';
-  // Probably should wipe console inner html too
-  element.get('todo-add').style.display = 'block';
-  // Probably remove calendar
-  document.getElementById('calendar-container').style.display = 'none';
-}
+element
+  .get('todo-add')
+  .addEventListener('click', (e: MouseEvent) => openConsole(e));
 
 // Defines what happens when we press 'enter' in the console
 element
@@ -199,44 +272,12 @@ element
     }
   });
 
-function focusPrevious() {
-  if (previousFocus === element.get('todo-input')) {
-    openConsole();
-    previousFocus.focus();
-  }
-}
-
-// On visibility change, update visibility state, and either store previous or focus previous el
-document.addEventListener(
-  'visibilitychange',
-  function handleVisibilityChange() {
-    // If going out of focus
-    if (document.hidden) {
-      // Update visibility state
-      // pageVisible = false;
-      // Store current focus
-      previousFocus = document.activeElement;
-    } else {
-      // If we're coming into focus
-      // Update visibility state
-      // pageVisible = true;
-      // Change focus to previous focus
-      focusPrevious();
-    }
-  },
-);
-
-// On focus, update visibility state and focus previous
-window.addEventListener('focus', function focusVisible() {
-  // pageVisible = true;
-  focusPrevious();
-});
-
-// On visibility change, update visibility state and store previous
-window.addEventListener('blur', function blurHidden() {
-  // pageVisible = false;
-  previousFocus = document.activeElement;
-});
+// function focusPrevious() {
+//   if (previousFocus === element.get('todo-input')) {
+//     openConsole();
+//     previousFocus.focus();
+//   }
+// }
 
 // On input to the console
 element
@@ -244,16 +285,4 @@ element
   .addEventListener('change', function updateSemantics() {
     // Register/record this date
     // Then eventually give suggestions on how to type this date
-  });
-
-// Defines what happens when we leave the console
-element
-  .get('todo-imp-container')
-  .addEventListener('focusout', function closeConsole() {
-    this.focus();
-    console.log(document.activeElement);
-    return;
-    if (!this.contains(document.activeElement)) {
-      window.setTimeout(handleFocus, 0);
-    }
   });

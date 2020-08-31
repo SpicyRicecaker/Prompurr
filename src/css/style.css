@@ -128,11 +128,15 @@ body {
   font-size: 0.8rem;
 }
 
-.calendar-table td:hover,
-.calendar-table th:hover {
+.calendar-table td:hover {
   background-color: #f3f3f3;
   color: #f1c232;
   cursor: pointer;
+}
+
+.calendar-table th:hover {
+  background-color: #f3f3f3;
+  color: #f1c232;
 }
 
 #calendar-selected {

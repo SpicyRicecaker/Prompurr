@@ -132,6 +132,7 @@ body {
 .calendar-table th:hover {
   background-color: #f3f3f3;
   color: #f1c232;
+  cursor: pointer;
 }
 
 #calendar-selected {

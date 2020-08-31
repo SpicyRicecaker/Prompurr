@@ -2,6 +2,7 @@
 let dateToday;
 const elementIds = [
     'todo-add',
+    'todo-imp-container',
     'todo-input',
     'todo-area',
     'todo-item-area',
@@ -38,8 +39,11 @@ function generateCalendar(someDate) {
         'December',
     ];
     // First create a calendar skeleton from the template
-    const tmp = document.importNode(element.get('calendar-template').content, true);
-    const table = tmp.querySelector('.calendar-table');
+    const documentFragment = document.importNode(element.get('calendar-template').content, true);
+    // We need to actually target the section because for some reason the importnode just imports
+    // a document fragment
+    const calendarSection = documentFragment.querySelector('section');
+    const table = calendarSection.querySelector('.calendar-table');
     // Collect the year, month, date currently
     const y = someDate.getFullYear();
     const m = someDate.getMonth();
@@ -49,7 +53,7 @@ function generateCalendar(someDate) {
     const firstDay = new Date(y, m, 1).getDay();
     const lastDate = new Date(y, m + 1, 0).getDate();
     // First set the name of the month
-    tmp.querySelector('.calendar-header').innerHTML = `${monthNames[m]}`;
+    calendarSection.querySelector('.calendar-header').innerHTML = `${monthNames[m]}`;
     // Now we can start filling in our table
     let dayCount = 1;
     // The first loop is outside of the main for loop
@@ -78,7 +82,21 @@ function generateCalendar(someDate) {
             }
         }
     }
-    document.body.appendChild(tmp);
+    // Use event delegation to add an event listener to the calendar
+    calendarSection.addEventListener('click', function inputDateConsole(e) {
+        // Make sure the the element that was selected was a td element
+        const el = e.target;
+        if (el.nodeName === 'TD') {
+            // Make sure that the date isn't null
+            // (We should really add the previous & future
+            // month dates greyed out...)
+            if (el.innerHTML !== '&nbsp;') {
+                // Append the month and date to our juicy console rn
+                element.get('todo-input').value += `${monthNames[m]} ${el.innerHTML}`;
+            }
+        }
+    });
+    document.body.appendChild(calendarSection);
 }
 function init() {
     buildElementCache();
@@ -106,12 +124,6 @@ function handleFocus() {
     // Probably remove calendar
     document.getElementById('calendar-container').style.display = 'none';
 }
-// Defines what happens when we leave the console
-element
-    .get('todo-input')
-    .addEventListener('focusout', function closeConsole() {
-    window.setTimeout(handleFocus, 0);
-});
 // Defines what happens when we press 'enter' in the console
 element
     .get('todo-input')
@@ -195,4 +207,15 @@ element
     .addEventListener('change', function updateSemantics() {
     // Register/record this date
     // Then eventually give suggestions on how to type this date
+});
+// Defines what happens when we leave the console
+element
+    .get('todo-imp-container')
+    .addEventListener('focusout', function closeConsole() {
+    this.focus();
+    console.log(document.activeElement);
+    return;
+    if (!this.contains(document.activeElement)) {
+        window.setTimeout(handleFocus, 0);
+    }
 });

@@ -10,6 +10,7 @@ const elementIds: string[] = [
   'todo-item-template',
   'calendar-template',
   'todo-item-list',
+  'title-date-time',
 ];
 const element = new Map<string, HTMLElement>();
 // let previousFocus;
@@ -114,7 +115,9 @@ function generateCalendar(someDate: Date) {
     // KEEP FOCUSING THE TEXTBOX CHARLESTON
     element.get('todo-input').focus();
   });
-  document.getElementById('todo-imp-container').appendChild(calendarSection);
+  calendarSection.setAttribute('class', 'dropdown-content');
+  calendarSection.style.display = 'none';
+  document.getElementsByClassName('dropdown')[0].appendChild(calendarSection);
 }
 
 function init() {
@@ -155,7 +158,10 @@ function hideOnBush(toHide: HTMLElement) {
   // Add an event listener to the whole document
   const scanForClicks = (e: MouseEvent) => {
     // If the element to hide does not include the clicked element
-    if (!toHide.contains(e.target as Node)) {
+    if (
+      !toHide.contains(e.target as Node) &&
+      !document.getElementsByClassName('dropdown')[0].contains(e.target as Node)
+    ) {
       // Hide the element/place your function here
       handleFocus();
 
@@ -285,4 +291,17 @@ element
   .addEventListener('change', function updateSemantics() {
     // Register/record this date
     // Then eventually give suggestions on how to type this date
+  });
+
+// On click of the button show cal
+document
+  .getElementById('title-date-time')
+  .addEventListener('click', function showHideCal() {
+    if (
+      document.getElementById('calendar-container').style.display === 'none'
+    ) {
+      document.getElementById('calendar-container').style.display = 'block';
+    } else {
+      document.getElementById('calendar-container').style.display = 'none';
+    }
   });

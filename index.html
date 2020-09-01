@@ -3,110 +3,114 @@
   <head>
     <title>Prompurr</title>
     <link
-      href='https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'
-      rel='stylesheet'
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
     />
     <link
-      href='https://fonts.googleapis.com/css2?family=Fira+Code&display=swap'
-      rel='stylesheet'
+      href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
+      rel="stylesheet"
     />
-    <link rel='stylesheet' type='text/css' href='src/css/style.css' />
+    <link rel="stylesheet" type="text/css" href="src/css/style.css" />
   </head>
+
   <body>
-    <template id='todo-item-template'>
-      <div class='todo-item'>
+    <template id="todo-item-template">
+      <div class="todo-item">
         <!-- This is basically the desired way we want the button to look, but we don't want href because it reloads the page -->
         <!-- <a href=''>&bull;</a> -->
-        <button class='todo-item-bullet'>&bull;</button>
-        <span class='todo-item-value'></span>
+        <button class="todo-item-bullet">&bull;</button>
+        <span class="todo-item-value"></span>
       </div>
     </template>
-    <template id='calendar-template'>
-      <section id='calendar-container'>
-        <span class='calendar-header'>
-          August
-        </span>
-      <table class='calendar-table'>
-        <tr>
-          <th>SUN</th>
-          <th>MON</th>
-          <th>TUE</th>
-          <th>WED</th>
-          <th>THU</th>
-          <th>FRI</th>
-          <th>SAT</th>
-        </tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        </tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        </tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        </tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        </tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        </tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
+    <template id="calendar-template">
+      <section id="calendar-container">
+        <span class="calendar-header"> </span>
+        <button>&#9668;</button>
+        <button>&#9658;</button>
+        <table class="calendar-table">
+          <tr>
+            <th>SUN</th>
+            <th>MON</th>
+            <th>TUE</th>
+            <th>WED</th>
+            <th>THU</th>
+            <th>FRI</th>
+            <th>SAT</th>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
       </section>
     </template>
-    <nav id='title-bar'>
-      <div class='left'>
-        <a href='' id='title-link'>Prompurr</a>
+    <nav id="title-bar">
+      <div class="left">
+        <a href="" id="title-link">Prompurr</a>
       </div>
-      <div class='center dropdown'>
-        <button id='title-date-time'><span id='title-date-time-label'>4:20p August 31</span> &#9660;</button>
+      <div class="center dropdown">
+        <button id="title-date-time">
+          <span id="title-date-time-label">4:20p August 31</span> &#9660;
+        </button>
       </div>
       <!-- <div class='right'>
       </div> -->
     </nav>
-    <div id='wrapper'>
-      <div id='todo-area'>
-        <button id='todo-add'>+</button>
-        <div id='todo-imp-container'>
-          <input type='text' id='todo-input' />
+    <div id="wrapper">
+      <div id="todo-area">
+        <button id="todo-add">+</button>
+        <div id="todo-imp-container">
+          <input type="text" id="todo-input" />
           <!-- <div>
             <div>
               noon
@@ -119,9 +123,9 @@
             </div>
           </div> -->
         </div>
-        <div id='todo-item-list'></div>
+        <div id="todo-item-list"></div>
       </div>
-      <div id='path-area'>
+      <div id="path-area">
         Path
         <ol>
           <li>Wake up</li>
@@ -131,6 +135,6 @@
         </ol>
       </div>
     </div>
-    <script src='src/js/index.js'></script>
+    <script src="src/js/index.js"></script>
   </body>
 </html>

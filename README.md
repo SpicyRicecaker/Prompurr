@@ -11,6 +11,35 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 [0827 THU](#0827-THU)
 [0829 SAT](#0829-SAT)
 [0830 SUN](#0830-SUN)
+[0831 MON](#0831-MON)
+
+## 0831 MON
+
+### IFE
+
+- Need to change months of calendar
+  - Store some kind of date variable with the calendar
+  - onclick generate calendar passing in newDate() with m +- 1
+  - Remove current calendar then append new
+- Still need to make date/time button dynamic
+  - Probably create a `tickRender()` function that updates date/time as well as display
+  - Thinking of using `requestAnimationFrame()` along with that
+- For time button
+  - Right under calendar
+  - 3 flexbox sections
+  - 11:59p & 12:00p defaults
+  - third box for now will be placeholder text with e.g. '12:34p'
+- For data registry
+  - Very expensive theoretical regex function `((January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2}|\d{1,2}:\d{2}[pa])`
+  - Then we would just take the matched string and create a new date, correlate that with the todo-item somehow
+- *CSS files are getting very messy*
+  - Find someway to organize them
+
+### L/C
+
+- **Right click on bottom bar in VSCode and make sure prettier is checked.**
+  - This way you'll be able to check prettier log. Sometimes prettier can't format if there's an error in the file
+- Actually good-looking calendar achieved!
 
 ## 0830 SUN
 

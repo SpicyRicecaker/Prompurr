@@ -103,7 +103,6 @@ function generateCalendar(currentDate, visible) {
     updateTableAndHeader();
     // Use event delegation to add an event listener to the calendar
     calendarSection.addEventListener('click', function inputDateConsole(e) {
-        e.stopPropagation();
         // Make sure the the element that was selected was a td element
         const el = e.target;
         if (el.nodeName === 'TD') {
@@ -223,10 +222,17 @@ function handleFocus() {
 // Takes in an element as a parameter, then
 // sets up event listeners that are automatically disposed of
 // when the element is closed
-function hideOnBush(toHide) {
+function hideOnBush(toHide, exceptions) {
     const scanForClicks = (e) => {
         // e.stopPropagation();
         // If the element to hide does not include the clicked element
+        if (exceptions !== undefined) {
+            for (let i = 0; i < exceptions.length; i += 1) {
+                if (exceptions[i].contains(e.target)) {
+                    return;
+                }
+            }
+        }
         if (!toHide.contains(e.target)) {
             // Hide the element/place your function here
             handleFocus();
@@ -237,7 +243,7 @@ function hideOnBush(toHide) {
     document.addEventListener('click', scanForClicks);
 }
 function openConsole(e) {
-    e.stopPropagation();
+    e.stopImmediatePropagation();
     // Replace button with console
     element.get('todo-add').style.display = 'none';
     element.get('todo-input').style.display = 'block';
@@ -246,7 +252,9 @@ function openConsole(e) {
     // Show calendar
     document.getElementById('calendar-container').style.display = 'block';
     // Define hide behavior
-    hideOnBush(element.get('todo-imp-container'));
+    hideOnBush(element.get('todo-imp-container'), [
+        document.getElementsByClassName('center')[0],
+    ]);
 }
 // Defines default add-todo clicked button behavior true
 element
@@ -306,11 +314,10 @@ element
 // On click of the button show cal
 document
     .getElementById('title-date-time')
-    .addEventListener('click', function showHideCal(e) {
-    e.stopPropagation();
+    .addEventListener('click', function showHideCal() {
     if (document.getElementById('calendar-container').style.display === 'none') {
         document.getElementById('calendar-container').style.display = 'block';
-        hideOnBush(this);
+        hideOnBush(this, [document.getElementById('todo-imp-container')]);
     }
     else {
         document.getElementById('calendar-container').style.display = 'none';

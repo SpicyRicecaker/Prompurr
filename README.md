@@ -12,6 +12,65 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 [0829 SAT](#0829-SAT)  
 [0830 SUN](#0830-SUN)  
 [0831 MON](#0831-MON)  
+[0901 TUE](#0901-TUE)
+
+## 0901 TUE
+
+### IFE
+
+- Keyword highlighting (SIMPLE)
+  - Make text in input field transparent
+  - Create a `<pre>` tag on top of input that cannot be selected, highlighted, etc.
+  - onChange() to input
+    - Clone string from inputfield
+    - Use our predefined regex function to replace dates/times with `<span>` of colored content
+    - set `<pre>` innerHTML to this string
+  - _This may look selections look weird tho_
+  - Profit
+- Data entry (Lots to learn here)
+  - Format data in json file
+    ```json
+    {
+      "tasks": [
+        {
+          "description": "do this",
+          "dateCreated": "some date string",
+          "dueDate": "some due date string"
+        },
+        {
+          "description": "do this 2",
+          "dateCreated": "some date string 2",
+          "dueDate": "some due date string 2"
+        }
+      ]
+    }
+    ```
+  - Change creating task & deleting task behavior
+    - Create
+      - Make new entry in temp.json file
+    - Delete
+      - Delete entry in temp.json file
+    - Q
+      - How do we select which task to delete? Do we assign each task a unique id?
+  - Create temporary load & save buttons
+    - Save
+      - Prompt user to download json?
+      - Somehow write json and download that
+    - Load
+      - Prompt user to select a file
+      - Read file & filepath
+  - Change rendering behavior
+    - Create `render()` function that creates html elements json data using javascript, called on json change
+
+### L/C
+
+- Massively overhauled both js & css readability + modularity
+  - generateCalendar() now includes a changeTableFunction() to call on month change
+  - scss now makes use of mixins and extends
+- Completed calendar change months + dates!
+- Completed clock function! **It may not be very accurate**
+- hideOnBush() includes optional exception parameters, allowing for multiple elements to be listening to the document at the same time and resolving console + calendar bugs
+- Completed time buttons! **Giving up on autocomplete/hint/placeholder text for the moment lol, but exploring the next IFEs may provide insight**
 
 ## 0831 MON
 
@@ -32,7 +91,7 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 - For data registry
   - Very expensive theoretical regex function `((January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2}|\d{1,2}:\d{2}[pa])`
   - Then we would just take the matched string and create a new date, correlate that with the todo-item somehow
-- *CSS files are getting very messy*
+- _CSS files are getting very messy_
   - Find someway to organize them
 
 ### L/C

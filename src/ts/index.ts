@@ -167,6 +167,18 @@ function generateCalendar(currentDate: Date, visible: boolean): HTMLElement {
       //   generateCalendar(newSomeDate, currentDate, true),
       // );
     });
+  calendarSection
+    .querySelector('#calendar-time-noon')
+    .addEventListener('click', () => {
+      (element.get('todo-input') as HTMLInputElement).value += ' 12:00p';
+    });
+  calendarSection
+    .querySelector('#calendar-time-midnight')
+    .addEventListener('click', () => {
+      (element.get('todo-input') as HTMLInputElement).value += ' 11:59p';
+    });
+  // calendarSection.querySelector('#calendar-time-other').addEventListener('click', ()=> {
+  // })
   calendarSection.setAttribute('class', 'dropdown-content');
   switch (visible) {
     case true: {
@@ -251,9 +263,9 @@ function hideOnBush(toHide: HTMLElement, exceptions?: Array<Element>) {
   const scanForClicks = (e: MouseEvent) => {
     // e.stopPropagation();
     // If the element to hide does not include the clicked element
-    if(exceptions !== undefined){
-      for(let i = 0; i < exceptions.length; i+=1){
-        if(exceptions[i].contains(e.target as Node)){
+    if (exceptions !== undefined) {
+      for (let i = 0; i < exceptions.length; i += 1) {
+        if (exceptions[i].contains(e.target as Node)) {
           return;
         }
       }
@@ -348,7 +360,7 @@ element
 // On input to the console
 element
   .get('todo-input')
-  .addEventListener('change', function updateSemantics() {
+  .addEventListener('change', function updateSemantics(this: HTMLInputElement) {
     // Register/record this date
     // Then eventually give suggestions on how to type this date
   });
@@ -361,7 +373,9 @@ document
       document.getElementById('calendar-container').style.display === 'none'
     ) {
       document.getElementById('calendar-container').style.display = 'block';
-      hideOnBush(this, [document.getElementById('todo-imp-container')]);
+      hideOnBush(document.getElementsByClassName('center')[0] as HTMLElement, [
+        document.getElementById('todo-imp-container'),
+      ]);
     } else {
       document.getElementById('calendar-container').style.display = 'none';
     }

@@ -104,6 +104,10 @@ body {
   display: none;
 }
 
+#todo-input::after{
+  content: "do this";
+}
+
 .todo-item {
   @extend .todo-basic;
   @include flex-y;
@@ -123,12 +127,29 @@ body {
   @extend .button-clear;
   &:hover{
     cursor: pointer;
+    background-color: white;
+  }
+}
+
+.equal-times {
+  display: flex;
+}
+
+.calendar-times {
+  @extend .button-clear;
+  font-family: 'Fira Code', monospace;
+  color: gray;
+  background: $notGray;
+  flex: 1;
+  &:hover{
+    cursor: pointer;
+    background-color: white;
   }
 }
 
 #calendar-container {
   display: none;
-  background-color: $notGray;
+  background-color: white;
   // Very important code that makes div expand to width of table
   width: auto;
   // Slight shadow for the bar
@@ -138,6 +159,7 @@ body {
 
 .calendar-title {
   display: flex;
+  background-color: $notGray;
 }
 
 .calendar-header {

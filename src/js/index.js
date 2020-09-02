@@ -152,6 +152,18 @@ function generateCalendar(currentDate, visible) {
         //   generateCalendar(newSomeDate, currentDate, true),
         // );
     });
+    calendarSection
+        .querySelector('#calendar-time-noon')
+        .addEventListener('click', () => {
+        element.get('todo-input').value += ' 12:00p';
+    });
+    calendarSection
+        .querySelector('#calendar-time-midnight')
+        .addEventListener('click', () => {
+        element.get('todo-input').value += ' 11:59p';
+    });
+    // calendarSection.querySelector('#calendar-time-other').addEventListener('click', ()=> {
+    // })
     calendarSection.setAttribute('class', 'dropdown-content');
     switch (visible) {
         case true: {
@@ -317,7 +329,9 @@ document
     .addEventListener('click', function showHideCal() {
     if (document.getElementById('calendar-container').style.display === 'none') {
         document.getElementById('calendar-container').style.display = 'block';
-        hideOnBush(this, [document.getElementById('todo-imp-container')]);
+        hideOnBush(document.getElementsByClassName('center')[0], [
+            document.getElementById('todo-imp-container'),
+        ]);
     }
     else {
         document.getElementById('calendar-container').style.display = 'none';

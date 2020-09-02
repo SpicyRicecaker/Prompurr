@@ -3,7 +3,7 @@ let dateToday: Date;
 const elementIds: string[] = [
   'todo-add',
   'todo-imp-container',
-  'todo-input',
+  'todo-textarea',
   'todo-area',
   'todo-item-area',
   'todo-item-template',
@@ -125,13 +125,13 @@ function generateCalendar(currentDate: Date, visible: boolean): HTMLElement {
       if (el.innerHTML !== '&nbsp;') {
         // Append the month and date to our juicy console rn
         (element.get(
-          'todo-input',
-        ) as HTMLInputElement).value += ` ${monthNames[m]} ${el.innerHTML}`;
+          'todo-textarea',
+        ) as HTMLTextAreaElement).value += ` ${monthNames[m]} ${el.innerHTML}`;
       }
     }
     // May change later
     // KEEP FOCUSING THE TEXTBOX CHARLESTON
-    element.get('todo-input').focus();
+    element.get('todo-textarea').focus();
   });
   // Also add event listeners to the buttons that will call generate calendar with a new date if needed
   calendarSection
@@ -170,12 +170,12 @@ function generateCalendar(currentDate: Date, visible: boolean): HTMLElement {
   calendarSection
     .querySelector('#calendar-time-noon')
     .addEventListener('click', () => {
-      (element.get('todo-input') as HTMLInputElement).value += ' 12:00p';
+      (element.get('todo-textarea') as HTMLTextAreaElement).value += ' 12:00p';
     });
   calendarSection
     .querySelector('#calendar-time-midnight')
     .addEventListener('click', () => {
-      (element.get('todo-input') as HTMLInputElement).value += ' 11:59p';
+      (element.get('todo-textarea') as HTMLTextAreaElement).value += ' 11:59p';
     });
   // calendarSection.querySelector('#calendar-time-other').addEventListener('click', ()=> {
   // })
@@ -249,7 +249,7 @@ updateClock();
 
 function handleFocus() {
   // Replace console with button
-  element.get('todo-input').style.display = 'none';
+  element.get('todo-textarea').style.display = 'none';
   element.get('todo-add').style.display = 'block';
   // Probably remove calendar as well
   document.getElementById('calendar-container').style.display = 'none';
@@ -286,9 +286,9 @@ function openConsole(e: MouseEvent) {
   e.stopImmediatePropagation();
   // Replace button with console
   element.get('todo-add').style.display = 'none';
-  element.get('todo-input').style.display = 'block';
+  element.get('todo-textarea').style.display = 'block';
   // Focus console
-  element.get('todo-input').focus();
+  element.get('todo-textarea').focus();
   // Show calendar
   document.getElementById('calendar-container').style.display = 'block';
   // Define hide behavior
@@ -304,12 +304,13 @@ element
 
 // Defines what happens when we press 'enter' in the console
 element
-  .get('todo-input')
+  .get('todo-textarea')
   .addEventListener('keydown', function createTodoItem(
-    this: HTMLInputElement,
+    this: HTMLTextAreaElement,
     e: KeyboardEvent,
   ) {
     if (e.key === 'Enter') {
+      e.preventDefault();
       // Create a new div based on the current values via template
       const tmp = document.importNode(
         (element.get('todo-item-template') as HTMLTemplateElement).content,
@@ -319,7 +320,8 @@ element
       tmp.querySelector('.todo-item-value').innerHTML = this.value;
 
       // Clear console
-      (element.get('todo-input') as HTMLInputElement).value = '';
+      (element.get('todo-textarea') as HTMLTextAreaElement).value = '';
+      element.get('todo-textarea').style.height = 'auto';
       // Append div to document
       element.get('todo-item-list').appendChild(tmp);
     }
@@ -357,10 +359,30 @@ element
     }
   });
 
+// Code from https://stackoverflow.com/a/42769683/11742422
+// getComputedStyle() returns all the css styles on an element,
+// document.documentElement literally is the <html> document
+// By getting the default size of a rem in px, we can multiply
+// a rem value we pass in
+function convertRemToPixels(rem) {
+  return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+
 // On input to the console
 element
-  .get('todo-input')
-  .addEventListener('change', function updateSemantics(this: HTMLInputElement) {
+  .get('todo-textarea')
+  .addEventListener('input', function updateSemantics(
+    this: HTMLTextAreaElement,
+  ) {
+    // Make sure to resize textarea if needed
+    // Code inspired by https://www.geeksforgeeks.org/how-to-create-auto-resize-textarea-using-javascript-jquery/
+    // Basically resets the height of the textarea, in which
+    // the browser will automatically compute the height of the
+    // textarea and put scrollbars on it
+    // Then we take advantage of this calculation to find the true
+    // scrollheight and set the height to it
+    this.style.height = 'auto';
+    this.style.height = `${this.scrollHeight - convertRemToPixels(2)}px`;
     // Register/record this date
     // Then eventually give suggestions on how to type this date
   });

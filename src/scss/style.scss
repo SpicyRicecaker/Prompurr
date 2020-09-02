@@ -90,27 +90,26 @@ body {
 #todo-add {
   @extend .button-clear;
   @extend .todo-basic;
-  // Apparently input and button use different box-sizing so
-  box-sizing: content-box;
   // .button-clear overrides
   &:hover {
     cursor: pointer;
   }
 }
 
-#todo-input {
+#todo-textarea {
   @extend .todo-basic;
+  // Prevent resize
+  resize: none;
+  // Hide scroll
+  overflow: hidden;
   // Hidden at the beginning
   display: none;
-}
-
-#todo-input::after{
-  content: "do this";
 }
 
 .todo-item {
   @extend .todo-basic;
   @include flex-y;
+  overflow-wrap: anywhere;
 }
 
 .todo-item-bullet {
@@ -123,9 +122,9 @@ body {
 
 .calendar-arrows {
   margin: 0;
-  padding: 0 .2rem;
+  padding: 0 0.2rem;
   @extend .button-clear;
-  &:hover{
+  &:hover {
     cursor: pointer;
     background-color: white;
   }
@@ -141,7 +140,7 @@ body {
   color: gray;
   background: $notGray;
   flex: 1;
-  &:hover{
+  &:hover {
     cursor: pointer;
     background-color: white;
   }

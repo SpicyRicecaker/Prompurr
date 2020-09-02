@@ -7,7 +7,7 @@
   color: #f1c232;
 }
 
-.todo-basic, .todo-item, #todo-input, #todo-add, #path-area {
+.todo-basic, .todo-item, #todo-textarea, #todo-add, #path-area {
   width: 90%;
   font-size: 1rem;
   padding: 1rem;
@@ -64,24 +64,20 @@ body {
   margin: 1rem;
 }
 
-#todo-add {
-  box-sizing: content-box;
-}
 #todo-add:hover {
   cursor: pointer;
 }
 
-#todo-input {
+#todo-textarea {
+  resize: none;
+  overflow: hidden;
   display: none;
-}
-
-#todo-input::after {
-  content: "do this";
 }
 
 .todo-item {
   display: flex;
   align-items: center;
+  overflow-wrap: anywhere;
 }
 
 .todo-item-bullet {

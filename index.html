@@ -24,9 +24,21 @@
     </template>
     <template id="calendar-template">
       <section id="calendar-container">
-        <span class="calendar-header"> </span>
-        <button>&#9668;</button>
-        <button>&#9658;</button>
+        <div class="calendar-title">
+          <span class="calendar-header"> </span>
+          <div class="no-space">
+            <button id="calendar-arrow-left" class="calendar-arrows">
+              &#9668;
+            </button>
+            <button id="calendar-reset" class="calendar-arrows">
+              &#9679;
+            </button>
+            <button id="calendar-arrow-right" class="calendar-arrows">
+              &#9658;
+            </button>
+          </div>
+        </div>
+
         <table class="calendar-table">
           <tr>
             <th>SUN</th>
@@ -110,7 +122,7 @@
       <div id="todo-area">
         <button id="todo-add">+</button>
         <div id="todo-imp-container">
-          <input type="text" id="todo-input" />
+          <input type="text" id="todo-input" autocomplete="off" />
           <!-- <div>
             <div>
               noon

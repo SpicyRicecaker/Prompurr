@@ -8,10 +8,10 @@ A progress-focused adaptive todolist. (Bad name ik I change later)
 # Progress Log
 
 [0824 MON](#0824-MON)  
-[0827 THU](#0827-THU)
-[0829 SAT](#0829-SAT)
-[0830 SUN](#0830-SUN)
-[0831 MON](#0831-MON)
+[0827 THU](#0827-THU)  
+[0829 SAT](#0829-SAT)  
+[0830 SUN](#0830-SUN)  
+[0831 MON](#0831-MON)  
 
 ## 0831 MON
 

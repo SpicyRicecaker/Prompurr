@@ -1,4 +1,3 @@
-// let pageVisible = true;
 let dateToday;
 const elementIds = [
     'todo-add',
@@ -12,7 +11,6 @@ const elementIds = [
     'title-date-time',
 ];
 const element = new Map();
-// let previousFocus;
 // Builds a lookup cache for faster element lookups
 function buildElementCache() {
     for (let i = 0; i < elementIds.length; i += 1) {
@@ -23,8 +21,15 @@ buildElementCache();
 function updateDate() {
     dateToday = new Date();
 }
-// Generates a calendar (+6 months soon) based off today's date
-function generateCalendar(someDate) {
+// function replaceElement(toReplace: HTMLElement, toAppend: HTMLElement) {
+//   const p = toReplace.parentElement;
+//   toReplace.remove();
+//   p.appendChild(toAppend);
+// }
+// Generates a calendar (+6 months soon) based off today's date & some other date
+function generateCalendar(currentDate, visible) {
+    const someDate = new Date();
+    Object.assign(someDate, currentDate);
     // Define an array of months
     const monthNames = [
         'January',
@@ -46,46 +51,59 @@ function generateCalendar(someDate) {
     // a document fragment
     const calendarSection = documentFragment.querySelector('section');
     const table = calendarSection.querySelector('.calendar-table');
-    // Collect the year, month, date currently
-    const y = someDate.getFullYear();
-    const m = someDate.getMonth();
-    const d = someDate.getDate();
-    // Get the first day, code inspired by
-    // https://stackoverflow.com/questions/13571700/get-first-and-last-date-of-current-month-with-javascript-or-jquery
-    const firstDay = new Date(y, m, 1).getDay();
-    const lastDate = new Date(y, m + 1, 0).getDate();
-    // First set the name of the month
-    calendarSection.querySelector('.calendar-header').innerHTML = `${monthNames[m]}`;
-    // Now we can start filling in our table
-    let dayCount = 1;
-    // The first loop is outside of the main for loop
-    // because we want to start at the specific day of the week
-    // of the first day of the month
-    // keep in mind that the first row we're doing is 1 not 0 because
-    // 1 is the day of the week
-    // Take care of the middle rows
-    for (let a = 1; a < 7; a += 1) {
-        for (let b = 0; b < 7; b += 1) {
-            // If we're in the first row and we're not at the first day yet
-            if (a === 1 && b < firstDay) {
-                table.rows[a].cells[b].innerHTML = '&nbsp;';
-            }
-            // If the day count is greater than the month length just leave
-            else if (dayCount > lastDate) {
-                table.rows[a].cells[b].innerHTML = '&nbsp;';
-            }
-            else {
-                table.rows[a].cells[b].innerHTML = dayCount.toString();
-                // Check if it's the special day, highlight it
-                if (dayCount === d) {
-                    table.rows[a].cells[b].setAttribute('id', 'calendar-selected');
+    // Numbers for currentdate
+    const cy = currentDate.getFullYear();
+    const cm = currentDate.getMonth();
+    // Our current day cell
+    let cell;
+    // Numbers for somedate
+    let y;
+    let m;
+    function updateTableAndHeader() {
+        // Collect the year, month, date currently
+        y = someDate.getFullYear();
+        m = someDate.getMonth();
+        const d = currentDate.getDate();
+        // Get the first day, code inspired by
+        // https://stackoverflow.com/questions/13571700/get-first-and-last-date-of-current-month-with-javascript-or-jquery
+        const firstDay = new Date(y, m, 1).getDay();
+        const lastDate = new Date(y, m + 1, 0).getDate();
+        // First set the name of the month
+        calendarSection.querySelector('.calendar-header').innerHTML = `${monthNames[m]} ${y}`;
+        // Now we can start filling in our table
+        let dayCount = 1;
+        // The first loop is outside of the main for loop
+        // because we want to start at the specific day of the week
+        // of the first day of the month
+        // keep in mind that the first row we're doing is 1 not 0 because
+        // 1 is the day of the week
+        // Take care of the middle rows
+        for (let a = 1; a < 7; a += 1) {
+            for (let b = 0; b < 7; b += 1) {
+                // If we're in the first row and we're not at the first day yet
+                if (a === 1 && b < firstDay) {
+                    table.rows[a].cells[b].innerHTML = '&nbsp;';
                 }
-                dayCount += 1;
+                // If the day count is greater than the month length just leave
+                else if (dayCount > lastDate) {
+                    table.rows[a].cells[b].innerHTML = '&nbsp;';
+                }
+                else {
+                    table.rows[a].cells[b].innerHTML = dayCount.toString();
+                    // Check if it's the special day, highlight it
+                    if (dayCount === d && cm === m && cy === y) {
+                        table.rows[a].cells[b].setAttribute('id', 'calendar-selected');
+                        cell = table.rows[a].cells[b];
+                    }
+                    dayCount += 1;
+                }
             }
         }
     }
+    updateTableAndHeader();
     // Use event delegation to add an event listener to the calendar
     calendarSection.addEventListener('click', function inputDateConsole(e) {
+        e.stopPropagation();
         // Make sure the the element that was selected was a td element
         const el = e.target;
         if (el.nodeName === 'TD') {
@@ -101,15 +119,99 @@ function generateCalendar(someDate) {
         // KEEP FOCUSING THE TEXTBOX CHARLESTON
         element.get('todo-input').focus();
     });
+    // Also add event listeners to the buttons that will call generate calendar with a new date if needed
+    calendarSection
+        .querySelector('#calendar-arrow-left')
+        .addEventListener('click', () => {
+        someDate.setMonth(m - 1);
+        cell.setAttribute('id', '');
+        updateTableAndHeader();
+        // replaceElement(
+        //   calendarSection,
+        //   generateCalendar(newSomeDate, currentDate, true),
+        // );
+    });
+    calendarSection
+        .querySelector('#calendar-arrow-right')
+        .addEventListener('click', () => {
+        someDate.setMonth(m + 1);
+        cell.setAttribute('id', '');
+        updateTableAndHeader();
+        // replaceElement(
+        //   calendarSection,
+        //   generateCalendar(newSomeDate, currentDate, true),
+        // );
+    });
+    calendarSection
+        .querySelector('#calendar-reset')
+        .addEventListener('click', () => {
+        someDate.setMonth(cm);
+        someDate.setFullYear(cy);
+        updateTableAndHeader();
+        // replaceElement(
+        //   calendarSection,
+        //   generateCalendar(newSomeDate, currentDate, true),
+        // );
+    });
     calendarSection.setAttribute('class', 'dropdown-content');
-    calendarSection.style.display = 'none';
-    document.getElementsByClassName('dropdown')[0].appendChild(calendarSection);
+    switch (visible) {
+        case true: {
+            calendarSection.style.display = 'block';
+            break;
+        }
+        case false: {
+            calendarSection.style.display = 'none';
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    return calendarSection;
 }
 function init() {
     updateDate();
-    generateCalendar(dateToday);
+    // Generate calendar then append it
+    document
+        .getElementsByClassName('dropdown')[0]
+        .appendChild(generateCalendar(dateToday, false));
 }
 init();
+function updateClock() {
+    const monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ];
+    function tick() {
+        updateDate();
+    }
+    function render() {
+        const hours = dateToday.getHours();
+        const hourTwelve = hours % 12 === 0 ? 12 : hours % 12;
+        const minutes = dateToday.getMinutes();
+        const minuteZero = minutes >= 10 ? minutes : `0${minutes}`;
+        const modS = hours >= 12 ? 'p' : 'a';
+        const monthS = monthNames[dateToday.getMonth()];
+        const dateS = dateToday.getDate();
+        document.getElementById('title-date-time-label').innerHTML = `${hourTwelve}:${minuteZero}${modS} ${monthS} ${dateS}`;
+    }
+    (function core() {
+        tick();
+        render();
+        setTimeout(core, 60000);
+    })();
+}
+updateClock();
 function handleFocus() {
     // Replace console with button
     element.get('todo-input').style.display = 'none';
@@ -122,25 +224,10 @@ function handleFocus() {
 // sets up event listeners that are automatically disposed of
 // when the element is closed
 function hideOnBush(toHide) {
-    // Defines what happens when we leave the console
-    // element
-    //   .get('todo-imp-container')
-    //   .addEventListener('focusout', function closeConsole() {
-    //     this.focus();
-    //     console.log(document.activeElement);
-    //     return;
-    //     if (!this.contains(document.activeElement)) {
-    //       window.setTimeout(handleFocus, 0);
-    //     }
-    //   });
-    // const isVisible = (elem) =>
-    //   !!elem &&
-    //   !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
-    // Add an event listener to the whole document
     const scanForClicks = (e) => {
+        // e.stopPropagation();
         // If the element to hide does not include the clicked element
-        if (!toHide.contains(e.target) &&
-            !document.getElementsByClassName('dropdown')[0].contains(e.target)) {
+        if (!toHide.contains(e.target)) {
             // Hide the element/place your function here
             handleFocus();
             // Cleanup the costly document event listener
@@ -148,35 +235,6 @@ function hideOnBush(toHide) {
         }
     };
     document.addEventListener('click', scanForClicks);
-    // // On visibility change, update visibility state, and either store previous or focus previous el
-    // document.addEventListener(
-    //   'visibilitychange',
-    //   function handleVisibilityChange() {
-    //     // If going out of focus
-    //     if (document.hidden) {
-    //       // Update visibility state
-    //       // pageVisible = false;
-    //       // Store current focus
-    //       previousFocus = document.activeElement;
-    //     } else {
-    //       // If we're coming into focus
-    //       // Update visibility state
-    //       // pageVisible = true;
-    //       // Change focus to previous focus
-    //       focusPrevious();
-    //     }
-    //   },
-    // );
-    // // On focus, update visibility state and focus previous
-    // window.addEventListener('focus', function focusVisible() {
-    //   // pageVisible = true;
-    //   focusPrevious();
-    // });
-    // // On visibility change, update visibility state and store previous
-    // window.addEventListener('blur', function blurHidden() {
-    //   // pageVisible = false;
-    //   previousFocus = document.activeElement;
-    // });
 }
 function openConsole(e) {
     e.stopPropagation();
@@ -238,12 +296,6 @@ element
         el.innerHTML = '&bull;';
     }
 });
-// function focusPrevious() {
-//   if (previousFocus === element.get('todo-input')) {
-//     openConsole();
-//     previousFocus.focus();
-//   }
-// }
 // On input to the console
 element
     .get('todo-input')
@@ -254,9 +306,11 @@ element
 // On click of the button show cal
 document
     .getElementById('title-date-time')
-    .addEventListener('click', function showHideCal() {
+    .addEventListener('click', function showHideCal(e) {
+    e.stopPropagation();
     if (document.getElementById('calendar-container').style.display === 'none') {
         document.getElementById('calendar-container').style.display = 'block';
+        hideOnBush(this);
     }
     else {
         document.getElementById('calendar-container').style.display = 'none';

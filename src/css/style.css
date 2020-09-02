@@ -1,3 +1,21 @@
+.button-clear, #title-date-time, .calendar-arrows, .todo-item-bullet, #todo-add {
+  background: none;
+  border: none;
+  outline: none;
+}
+.button-clear:hover, #title-date-time:hover, .calendar-arrows:hover, .todo-item-bullet:hover, #todo-add:hover {
+  color: #f1c232;
+}
+
+.todo-basic, .todo-item, #todo-input, #todo-add, #path-area {
+  width: 90%;
+  font-size: 1rem;
+  padding: 1rem;
+  font-family: "Fira Code", monospace;
+  border: none;
+  outline: none;
+}
+
 @font-face {
   font-family: "Lemon Milk";
   src: url("../fonts/lemonmilk-rg.otf");
@@ -13,111 +31,83 @@ body {
 }
 
 #title-link {
-  /* We'll use black/white/red/orange since rgb is monopolized by Google lol*/
   text-decoration: none;
   font-family: "Lemon Milk";
-  font-size: 1em;
+  font-size: 1rem;
   color: #434343;
 }
-
 #title-link:hover {
   color: #f1c232;
 }
 
 #title-bar {
   background-color: #f3f3f3;
-  /* Makes the title bar stay at the top of the page */
   position: sticky;
   top: 0;
-  /* Adding some padding to the bar so that the links are centered*/
   padding: 0.5em;
-  /* Slight shadow for the bar */
-  box-shadow: 0px 2px 3px #dadada;
+  box-shadow: 0px 0.1rem 0.2rem #dadada;
   display: flex;
-  flex-direction: row;
 }
 
 .left,
 .center {
+  flex: 1;
   display: flex;
   align-items: center;
-  flex: 1;
 }
 
 #path-area {
-  margin: 1em;
-  font-family: "Fira Code", monospace;
-  font-size: 1em;
   color: gray;
 }
 
 #todo-area {
-  margin: 1em;
+  margin: 1rem;
 }
 
 #todo-add {
-  /* Size of box */
-  width: 90%;
-  font-family: "Fira Code", monospace;
-  font-size: 1em;
-  padding: 1em;
-  /* Apparently input and button use different box-sizing so*/
   box-sizing: content-box;
-  /* Box styling */
-  border: none;
-  /* outline: dashed #f3f3f3 2px; */
-  outline: none;
-  background-color: white;
 }
-
 #todo-add:hover {
   cursor: pointer;
-  color: #f1c232;
 }
 
 #todo-input {
-  /* Size of box true*/
-  width: 90%;
-  font-family: "Fira Code", monospace;
-  font-size: 1em;
-  padding: 1em;
-  border: none;
-  outline: none;
-  /* Just for the beginning */
   display: none;
 }
 
 .todo-item {
-  width: 90%;
-  font-family: "Fira Code", monospace;
-  padding: 1em;
-  border: none;
-  outline: none;
-  font-size: 1em;
   display: flex;
   align-items: center;
 }
 
 .todo-item-bullet {
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0 0.5em;
+  padding: 0 0.5rem;
   font-family: "Fira Code", monospace;
-  font-size: 1.25em;
+  font-size: 1.25rem;
 }
-.todo-item-bullet:hover {
-  color: #f1c232;
+
+.calendar-arrows {
+  margin: 0;
+  padding: 0 0.2rem;
+}
+.calendar-arrows:hover {
+  cursor: pointer;
 }
 
 #calendar-container {
   display: none;
   background-color: #f3f3f3;
   width: auto;
-  box-shadow: 0px 2px 4px #dadada;
+  box-shadow: 0rem 2px 4px #dadada;
+  display: block;
+}
+
+.calendar-title {
+  display: flex;
 }
 
 .calendar-header {
+  flex: 1;
   font-family: "Fira Code";
   padding: 0 0.2rem 0;
 }
@@ -129,21 +119,17 @@ body {
 .calendar-table td {
   text-align: center;
 }
+.calendar-table td:hover {
+  color: #f1c232;
+  cursor: pointer;
+}
 
 .calendar-table th {
   font-weight: normal;
   color: gray;
   font-size: 0.8rem;
 }
-
-.calendar-table td:hover {
-  background-color: #f3f3f3;
-  color: #f1c232;
-  cursor: pointer;
-}
-
 .calendar-table th:hover {
-  background-color: #f3f3f3;
   color: #f1c232;
 }
 
@@ -151,26 +137,22 @@ body {
   background-color: #e06666;
 }
 
+.no-space {
+  display: inline-flex;
+}
+
 #wrapper {
   display: grid;
   grid-template: "todo-area panel-area" auto/minmax(0, 1fr) minmax(0, 1fr);
 }
 
-#wrapper > div {
-  /* background-color: #efefef; */
-}
-
 #title-date-time {
-  background: none;
-  border: none;
-  outline: none;
   padding: 0 0.5rem;
   font-family: "Open Sans", monospace;
   font-size: 0.7rem;
   color: #434343;
 }
 #title-date-time:hover {
-  color: #f1c232;
   cursor: pointer;
 }
 

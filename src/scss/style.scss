@@ -2,6 +2,36 @@ $munchingOrange: #f1c232;
 $msTake: #e06666;
 $notGray: #f3f3f3;
 
+@mixin flex-x {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin flex-y {
+  display: flex;
+  align-items: center;
+}
+
+.button-clear {
+  background: none;
+  border: none;
+  outline: none;
+  &:hover {
+    color: $munchingOrange;
+  }
+}
+
+.todo-basic {
+  // Sizing of box
+  width: 90%;
+  font-size: 1rem;
+  padding: 1rem;
+  // Styling
+  font-family: 'Fira Code', monospace;
+  border: none;
+  outline: none;
+}
+
 @font-face {
   font-family: 'Lemon Milk';
   src: url('../fonts/lemonmilk-rg.otf');
@@ -18,114 +48,81 @@ body {
 }
 
 #title-link {
-  /* We'll use black/white/red/orange since rgb is monopolized by Google lol*/
+  // We'll use black/white/red/orange since rgb is monopolized by Google lol
   text-decoration: none;
   font-family: 'Lemon Milk';
-  font-size: 1em;
+  font-size: 1rem;
   color: #434343;
-}
-
-#title-link:hover {
-  color: $munchingOrange;
+  &:hover {
+    color: $munchingOrange;
+  }
 }
 
 #title-bar {
   background-color: $notGray;
-  /* Makes the title bar stay at the top of the page */
+  // Makes the title bar stay at the top of the page
   position: sticky;
   top: 0;
-  /* Adding some padding to the bar so that the links are centered*/
+  // Adding some padding to the bar so that the links are centered
   padding: 0.5em;
-  /* Slight shadow for the bar */
-  box-shadow: 0px 2px 3px #dadada;
+  // Slight shadow for the bar
+  box-shadow: 0px 0.1rem 0.2rem #dadada;
   // Center that
   display: flex;
-  flex-direction: row;
 }
-
-// Right now if we center the calendar the right does not have enough space so
-// .left,
-// .right {
-//   flex: 1;
-// }
 
 .left,
 .center {
-  display: flex;
-  align-items: center;
+  // Expand to fill up container
   flex: 1;
+  @include flex-y;
 }
 
 #path-area {
-  margin: 1em;
-  font-family: 'Fira Code', monospace;
-  font-size: 1em;
+  @extend .todo-basic;
   color: gray;
 }
 
 #todo-area {
-  margin: 1em;
+  margin: 1rem;
 }
 
 #todo-add {
-  /* Size of box */
-  width: 90%;
-  font-family: 'Fira Code', monospace;
-  font-size: 1em;
-  padding: 1em;
-  /* Apparently input and button use different box-sizing so*/
+  @extend .button-clear;
+  @extend .todo-basic;
+  // Apparently input and button use different box-sizing so
   box-sizing: content-box;
-  /* Box styling */
-  border: none;
-  /* outline: dashed #f3f3f3 2px; */
-  outline: none;
-  background-color: white;
-}
-
-#todo-add:hover {
-  cursor: pointer;
-  color: $munchingOrange;
+  // .button-clear overrides
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 #todo-input {
-  /* Size of box true*/
-  width: 90%;
-  font-family: 'Fira Code', monospace;
-  font-size: 1em;
-  padding: 1em;
-  border: none;
-  outline: none;
-  /* Just for the beginning */
+  @extend .todo-basic;
+  // Hidden at the beginning
   display: none;
 }
 
 .todo-item {
-  width: 90%;
-  font-family: 'Fira Code', monospace;
-  padding: 1em;
-  border: none;
-  outline: none;
-  font-size: 1em;
-  // Center stuff
-  display: flex;
-  // flex-direction: row;
-  // justify-content: center;
-  align-items: center;
+  @extend .todo-basic;
+  @include flex-y;
 }
 
 .todo-item-bullet {
-  background: none;
-  border: none;
-  outline: none;
+  @extend .button-clear;
   // margin: 0;
-  padding: 0 0.5em;
+  padding: 0 0.5rem;
   font-family: 'Fira Code', monospace;
-  font-size: 1.25em;
-  &:hover {
-    // Would like to add this but jank rn, when the list moves up
-    // the cursor does not shift from pointer to normal
-    // cursor: pointer;
-    color: $munchingOrange;
+  font-size: 1.25rem;
+}
+
+.calendar-arrows {
+  margin: 0;
+  padding: 0 .2rem;
+  @extend .button-clear;
+  &:hover{
+    cursor: pointer;
   }
 }
 
@@ -135,10 +132,16 @@ body {
   // Very important code that makes div expand to width of table
   width: auto;
   // Slight shadow for the bar
-  box-shadow: 0px 2px 4px #dadada;
+  box-shadow: 0rem 2px 4px #dadada;
+  display: block;
+}
+
+.calendar-title {
+  display: flex;
 }
 
 .calendar-header {
+  flex: 1;
   font-family: 'Fira Code';
   padding: 0 0.2rem 0;
 }
@@ -149,27 +152,27 @@ body {
 
 .calendar-table td {
   text-align: center;
+  &:hover {
+    color: $munchingOrange;
+    cursor: pointer;
+  }
 }
 
 .calendar-table th {
   font-weight: normal;
   color: gray;
   font-size: 0.8rem;
-}
-
-.calendar-table td:hover {
-  background-color: $notGray;
-  color: $munchingOrange;
-  cursor: pointer;
-}
-
-.calendar-table th:hover {
-  background-color: $notGray;
-  color: $munchingOrange;
+  &:hover {
+    color: $munchingOrange;
+  }
 }
 
 #calendar-selected {
   background-color: $msTake;
+}
+
+.no-space {
+  display: inline-flex;
 }
 
 #wrapper {
@@ -179,24 +182,14 @@ body {
     / minmax(0, 1fr) minmax(0, 1fr);
 }
 
-#wrapper > div {
-  /* background-color: #efefef; */
-}
-
 #title-date-time {
-  background: none;
-  border: none;
-  outline: none;
+  @extend .button-clear;
   // margin: 0;
   padding: 0 0.5rem;
   font-family: 'Open Sans', monospace;
   font-size: 0.7rem;
   color: #434343;
   &:hover {
-    // Would like to add this but jank rn, when the list moves up
-    // the cursor does not shift from pointer to normal
-    // cursor: pointer;
-    color: $munchingOrange;
     cursor: pointer;
   }
 }

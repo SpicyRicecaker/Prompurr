@@ -1,9 +1,10 @@
-# Prompurr
+# [Prompurr](https://nostalgic-mcclintock-27a65d.netlify.app)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/SpicyRicecaker/Prompurr?logo=Github&style=flat-square)
 ![GitHub repo size](https://img.shields.io/github/repo-size/SpicyRicecaker/Prompurr?logo=Github&style=flat-square)
 
-A progress-focused adaptive todolist. (Bad name ik I change later)
+A progress-focused adaptive todolist. (Bad name ik I change later)  
+Visit the website at https://nostalgic-mcclintock-27a65d.netlify.app!
 
 # Progress Log
 

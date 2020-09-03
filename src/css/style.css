@@ -14,12 +14,12 @@ pre {
   /* Internet Explorer 5.5+ */
 }
 
-.button-clear, #title-date-time, .calendar-times, .calendar-arrows, .todo-item-bullet, #todo-add {
+.button-clear, .data-buttons, #title-date-time, .calendar-times, .calendar-arrows, .todo-item-bullet, #todo-add {
   background: none;
   border: none;
   outline: none;
 }
-.button-clear:hover, #title-date-time:hover, .calendar-times:hover, .calendar-arrows:hover, .todo-item-bullet:hover, #todo-add:hover {
+.button-clear:hover, .data-buttons:hover, #title-date-time:hover, .calendar-times:hover, .calendar-arrows:hover, .todo-item-bullet:hover, #todo-add:hover {
   color: #f1c232;
 }
 
@@ -70,6 +70,7 @@ body {
   flex: 1;
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 #path-area {
@@ -200,6 +201,7 @@ body {
 }
 
 #title-date-time {
+  flex: 1;
   padding: 0 0.5rem;
   font-family: "Open Sans", monospace;
   font-size: 0.7rem;
@@ -223,6 +225,16 @@ body {
   display: none;
   position: absolute;
   width: 100%;
+}
+
+.data-buttons {
+  padding: 0 0.5rem;
+  font-family: "Open Sans", monospace;
+  font-size: 0.7rem;
+  color: #434343;
+}
+.data-buttons:hover {
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=style.css.map */

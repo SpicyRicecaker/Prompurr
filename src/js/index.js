@@ -1,3 +1,27 @@
+// What will happen is that we'll try to load user
+// data from a file in the server, but in the case
+// that a request is invalid / there is a new user,
+// we'll use a guest template instead
+let userData = {
+    username: 'spicyricecaker',
+    password: 'password',
+    tasks: [
+        {
+            description: 'example task',
+            dateCreated: 'some date string',
+            dueDate: 'some due date string',
+        },
+        {
+            description: 'example task 2',
+            dateCreated: 'some date string 2',
+            dueDate: 'some due date string 2',
+        },
+    ],
+};
+// For now though, in the short term, we'll just implement
+// a load button, which will load user with username 'spicyricecaker'
+// and a save button, which will write all info including tasks of current username
+// to a prompurrData.json file
 let dateToday;
 const elementIds = [
     'todo-add',
@@ -19,6 +43,21 @@ function buildElementCache() {
     }
 }
 buildElementCache();
+// Define an array of months
+const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+];
 function updateDate() {
     dateToday = new Date();
 }
@@ -38,21 +77,6 @@ function prompurrCompile(vanilla) {
 function generateCalendar(currentDate, visible) {
     const someDate = new Date();
     Object.assign(someDate, currentDate);
-    // Define an array of months
-    const monthNames = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ];
     // First create a calendar skeleton from the template
     const documentFragment = document.importNode(element.get('calendar-template').content, true);
     // We need to actually target the section because for some reason the importnode just imports
@@ -187,20 +211,6 @@ function init() {
 }
 init();
 function updateClock() {
-    const monthNames = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ];
     function tick() {
         updateDate();
     }
@@ -270,23 +280,118 @@ function openConsole(e) {
 element
     .get('todo-add')
     .addEventListener('click', (e) => openConsole(e));
+// Takes console input and converts it into data
+function extractData(rawInput) {
+    let exDesc;
+    let rawMonthDate;
+    let rawTime;
+    // First we gotta select the month and date
+    // When we find a match, store it, and replace it with ''
+    exDesc = rawInput.replaceAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}/gi, function findRemoveRawDate(raw) {
+        rawMonthDate = raw;
+        return '';
+    });
+    // Then select the time
+    // When we find match, store it, and replace it with ''
+    exDesc = exDesc.replaceAll(/\d{1,2}:\d{2}[pa]/gi, function findRemoveRawTime(raw) {
+        rawTime = raw;
+        return '';
+    });
+    // At this point exDesc should be final.
+    // Now we can make a new date and start setting it to our heart's content
+    const exDate = new Date();
+    exDate.setSeconds(0);
+    let exMonth;
+    let exDay;
+    let exHour;
+    let exMinute;
+    let counter = 0;
+    // If we matched a rawMonthDate
+    if (rawMonthDate !== undefined) {
+        // Set exMonth and exDay to it
+        const splitMonthDate = rawMonthDate.split(/\s+/);
+        exMonth = monthNames.indexOf(splitMonthDate[0]);
+        exDay = parseInt(splitMonthDate[1], 10);
+    }
+    else {
+        counter += 1;
+        exMonth = dateToday.getMonth();
+        exDay = dateToday.getDate();
+    }
+    // If we matched a time
+    if (rawTime !== undefined) {
+        // Set hour & minute
+        const splitHourMin = rawTime.split(':');
+        exHour = parseInt(splitHourMin[0], 10);
+        exMinute = parseInt(splitHourMin[1].substring(0, 2), 10);
+        const extension = splitHourMin[1].substring(2, 3);
+        if (exHour === 12) {
+            exHour -= 12;
+        }
+        if (extension === 'p') {
+            exHour += 12;
+        }
+    }
+    else {
+        counter += 1;
+        exHour = 23;
+        exMinute = 59;
+    }
+    exDate.setMonth(exMonth);
+    exDate.setDate(exDay);
+    exDate.setHours(exHour);
+    exDate.setMinutes(exMinute);
+    // To find month and date, split our matched string and use substring
+    return counter !== 2 ? [exDesc, exDate] : [exDesc, undefined];
+}
+function createTodoItem(description, dueDate, currentDate) {
+    // Create a new div based on the current values via template
+    const tmp = document.importNode(element.get('todo-item-template').content, true);
+    // This reallly should have its own method VVV
+    let modifier;
+    // Select the span element inside and set it equal to the console
+    if (dueDate === undefined) {
+        modifier = '<span style="color: #ffe599;"> sometime?</span>';
+    }
+    else if (currentDate < dueDate) {
+        if (dueDate.getDate() === currentDate.getDate()) {
+            modifier = '<span style="color: #ea9999;"> today!</span>';
+        }
+        else {
+            // Get difference in mili
+            const timeDiff = dueDate.getTime() - currentDate.getTime();
+            // Find number of days until deadline
+            const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            if (dayDiff !== 1) {
+                modifier = `<span style="color: #a2c4c9;"> in ${dayDiff} days</span>`;
+            }
+            else {
+                modifier = '<span style="color: #f9cb9c;"> tomorrow</span>';
+            }
+        }
+    }
+    else {
+        modifier = '<span style="color: #b6d7a8;"> pick new path?</span>';
+    }
+    tmp.querySelector('.todo-item-value').innerHTML = description + modifier;
+    // Append div to document
+    element.get('todo-item-list').appendChild(tmp);
+}
 // Defines what happens when we press 'enter' in the console
 element
     .get('todo-textarea')
-    .addEventListener('keydown', function createTodoItem(e) {
+    .addEventListener('keydown', function consoleTodoItem(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
-        // Create a new div based on the current values via template
-        const tmp = document.importNode(element.get('todo-item-template').content, true);
-        // Select the span element inside and set it equal to the console
-        tmp.querySelector('.todo-item-value').innerHTML = this.value;
+        const [exDesc, exDate] = extractData(this.value);
+        // First we gotta extract the date from the string
+        // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+        createTodoItem(exDesc, exDate, dateToday);
         // Clear console
         element.get('todo-textarea').value = '';
         element.get('todo-textarea').style.height = 'auto';
         // Clear overlay
         element.get('todo-overlay').innerHTML = '';
-        // Append div to document
-        element.get('todo-item-list').appendChild(tmp);
     }
 });
 // Event delegation to todo-item-area
@@ -360,3 +465,11 @@ document
         document.getElementById('calendar-container').style.display = 'none';
     }
 });
+// On save we're looking to make a server request to write current data
+document
+    .getElementById('save-data')
+    .addEventListener('click', function writeData() { });
+// On load we're looking to make a server request to load json data
+document
+    .getElementById('load-data')
+    .addEventListener('click', function saveData() { });

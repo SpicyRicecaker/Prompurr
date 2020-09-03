@@ -2,6 +2,17 @@ $munchingOrange: #f1c232;
 $msTake: #e06666;
 $notGray: #f3f3f3;
 
+pre {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
 @mixin flex-x {
   display: flex;
   justify-content: center;
@@ -96,14 +107,33 @@ body {
   }
 }
 
+#todo-imp-container {
+  display: none;
+}
+
 #todo-textarea {
+  grid-area: 1 / 1;
   @extend .todo-basic;
   // Prevent resize
   resize: none;
   // Hide scroll
   overflow: hidden;
+  color: transparent;
+  caret-color: black;
   // Hidden at the beginning
-  display: none;
+  // display: none;
+  &::selection {
+    color: #fff2cc;
+    background: #fff2cc;
+  }
+}
+
+#todo-overlay {
+  grid-area: 1 / 1;
+  // This needs to be set in order for the grid to not expand based on content
+  min-width: 0;
+  @extend .todo-basic;
+  pointer-events: none;
 }
 
 .todo-item {
@@ -201,6 +231,10 @@ body {
   grid-template:
     'todo-area panel-area' auto
     / minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.code-wrapper {
+  display: grid;
 }
 
 #title-date-time {

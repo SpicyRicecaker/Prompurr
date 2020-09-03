@@ -9,6 +9,7 @@ const elementIds = [
     'calendar-template',
     'todo-item-list',
     'title-date-time',
+    'todo-overlay',
 ];
 const element = new Map();
 // Builds a lookup cache for faster element lookups
@@ -26,6 +27,13 @@ function updateDate() {
 //   toReplace.remove();
 //   p.appendChild(toAppend);
 // }
+// Function that takes in a string, styles keywords, and returns as a string
+function prompurrCompile(vanilla) {
+    let modded = vanilla;
+    modded = modded.replaceAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}/gi, '<span style="color: #d5a6bd;">$&</span>');
+    modded = modded.replaceAll(/\d{1,2}:\d{2}[pa]/gi, '<span style="color: #76a5af;">$&</span>');
+    return modded;
+}
 // Generates a calendar (+6 months soon) based off today's date & some other date
 function generateCalendar(currentDate, visible) {
     const someDate = new Date();
@@ -117,6 +125,8 @@ function generateCalendar(currentDate, visible) {
         // May change later
         // KEEP FOCUSING THE TEXTBOX CHARLESTON
         element.get('todo-textarea').focus();
+        // COMPILE XD
+        element.get('todo-overlay').innerHTML = prompurrCompile(element.get('todo-textarea').value);
     });
     // Also add event listeners to the buttons that will call generate calendar with a new date if needed
     calendarSection
@@ -125,10 +135,6 @@ function generateCalendar(currentDate, visible) {
         someDate.setMonth(m - 1);
         cell.setAttribute('id', '');
         updateTableAndHeader();
-        // replaceElement(
-        //   calendarSection,
-        //   generateCalendar(newSomeDate, currentDate, true),
-        // );
     });
     calendarSection
         .querySelector('#calendar-arrow-right')
@@ -136,10 +142,6 @@ function generateCalendar(currentDate, visible) {
         someDate.setMonth(m + 1);
         cell.setAttribute('id', '');
         updateTableAndHeader();
-        // replaceElement(
-        //   calendarSection,
-        //   generateCalendar(newSomeDate, currentDate, true),
-        // );
     });
     calendarSection
         .querySelector('#calendar-reset')
@@ -147,10 +149,6 @@ function generateCalendar(currentDate, visible) {
         someDate.setMonth(cm);
         someDate.setFullYear(cy);
         updateTableAndHeader();
-        // replaceElement(
-        //   calendarSection,
-        //   generateCalendar(newSomeDate, currentDate, true),
-        // );
     });
     calendarSection
         .querySelector('#calendar-time-noon')
@@ -225,7 +223,7 @@ function updateClock() {
 updateClock();
 function handleFocus() {
     // Replace console with button
-    element.get('todo-textarea').style.display = 'none';
+    element.get('todo-imp-container').style.display = 'none';
     element.get('todo-add').style.display = 'block';
     // Probably remove calendar as well
     document.getElementById('calendar-container').style.display = 'none';
@@ -258,7 +256,7 @@ function openConsole(e) {
     e.stopImmediatePropagation();
     // Replace button with console
     element.get('todo-add').style.display = 'none';
-    element.get('todo-textarea').style.display = 'block';
+    element.get('todo-imp-container').style.display = 'block';
     // Focus console
     element.get('todo-textarea').focus();
     // Show calendar
@@ -285,6 +283,8 @@ element
         // Clear console
         element.get('todo-textarea').value = '';
         element.get('todo-textarea').style.height = 'auto';
+        // Clear overlay
+        element.get('todo-overlay').innerHTML = '';
         // Append div to document
         element.get('todo-item-list').appendChild(tmp);
     }
@@ -339,6 +339,10 @@ element
     // scrollheight and set the height to it
     this.style.height = 'auto';
     this.style.height = `${this.scrollHeight - convertRemToPixels(2)}px`;
+    const renderOverlay = () => {
+        element.get('todo-overlay').innerHTML = prompurrCompile(this.value);
+    };
+    renderOverlay();
     // Register/record this date
     // Then eventually give suggestions on how to type this date
 });

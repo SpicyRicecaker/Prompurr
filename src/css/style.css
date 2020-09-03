@@ -1,3 +1,19 @@
+pre {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+  /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;
+  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;
+  /* Opera 4-6 */
+  white-space: -o-pre-wrap;
+  /* Opera 7 */
+  word-wrap: break-word;
+  /* Internet Explorer 5.5+ */
+}
+
 .button-clear, #title-date-time, .calendar-times, .calendar-arrows, .todo-item-bullet, #todo-add {
   background: none;
   border: none;
@@ -7,7 +23,7 @@
   color: #f1c232;
 }
 
-.todo-basic, .todo-item, #todo-textarea, #todo-add, #path-area {
+.todo-basic, .todo-item, #todo-overlay, #todo-textarea, #todo-add, #path-area {
   width: 90%;
   font-size: 1rem;
   padding: 1rem;
@@ -68,10 +84,26 @@ body {
   cursor: pointer;
 }
 
+#todo-imp-container {
+  display: none;
+}
+
 #todo-textarea {
+  grid-area: 1/1;
   resize: none;
   overflow: hidden;
-  display: none;
+  color: transparent;
+  caret-color: black;
+}
+#todo-textarea::selection {
+  color: #fff2cc;
+  background: #fff2cc;
+}
+
+#todo-overlay {
+  grid-area: 1/1;
+  min-width: 0;
+  pointer-events: none;
 }
 
 .todo-item {
@@ -161,6 +193,10 @@ body {
 #wrapper {
   display: grid;
   grid-template: "todo-area panel-area" auto/minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.code-wrapper {
+  display: grid;
 }
 
 #title-date-time {

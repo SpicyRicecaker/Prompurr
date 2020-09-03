@@ -106,7 +106,6 @@
           <button id="calendar-time-midnight" class="calendar-times">
             Midnight
           </button>
-          <!-- <button id="calendar-time-other" class="calendar-times">Other</button> -->
         </div>
       </section>
     </template>
@@ -116,29 +115,18 @@
       </div>
       <div class="center dropdown">
         <button id="title-date-time">
-          <span id="title-date-time-label">4:20p August 31</span> &#9660;
+          <span id="title-date-time-label"></span> &#9660;
         </button>
       </div>
-      <!-- <div class='right'>
-      </div> -->
     </nav>
     <div id="wrapper">
       <div id="todo-area">
         <button id="todo-add">+</button>
         <div id="todo-imp-container">
-          <!-- Replace todo-input & type="input" -->
-          <textarea id="todo-textarea" wrap="soft" rows="1"></textarea>
-          <!-- <div>
-            <div>
-              noon
-            </div>
-            <div>
-              midnight
-            </div>
-            <div>
-              other
-            </div>
-          </div> -->
+          <div class="code-wrapper">
+            <textarea id="todo-textarea" wrap="soft" rows="1"></textarea>
+            <pre id="todo-overlay"></pre>
+          </div>
         </div>
         <div id="todo-item-list"></div>
       </div>

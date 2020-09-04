@@ -8,16 +8,26 @@ let userData = {
   tasks: [
     {
       description: 'example task',
-      dateCreated: 'some date string',
-      dueDate: 'some due date string',
+      dateCreated: new Date(),
+      dateDue: new Date(),
     },
     {
       description: 'example task 2',
-      dateCreated: 'some date string 2',
-      dueDate: 'some due date string 2',
+      dateCreated: new Date(),
+      dateDue: new Date(),
     },
   ],
 };
+
+interface task {
+  description: string;
+  dateCreated: Date;
+  dateDue: Date;
+}
+
+// Cache of currently loaded tasks
+const taskCache = new Map<HTMLDivElement, task>();
+
 // For now though, in the short term, we'll just implement
 // a load button, which will load user with username 'spicyricecaker'
 // and a save button, which will write all info including tasks of current username
@@ -229,12 +239,69 @@ function generateCalendar(currentDate: Date, visible: boolean): HTMLElement {
   return calendarSection;
 }
 
+function createTodoItem(
+  description: string,
+  dueDate: Date,
+  currentDate: Date,
+): HTMLDivElement {
+  // Create a new div based on the current values via template
+  const documentFragment = document.importNode(
+    (element.get('todo-item-template') as HTMLTemplateElement).content,
+    true,
+  );
+  const todoItem = documentFragment.querySelector('.todo-item');
+  // This reallly should have its own method VVV
+  let modifier: string;
+  // Select the span element inside and set it equal to the console
+  if (dueDate === undefined) {
+    modifier = '<span style="color: #ffe599;"> sometime?</span>';
+  } else if (currentDate < dueDate) {
+    if (dueDate.getDate() === currentDate.getDate()) {
+      modifier = '<span style="color: #ea9999;"> today!</span>';
+    } else {
+      // Get difference in mili
+      const timeDiff = dueDate.getTime() - currentDate.getTime();
+      // Find number of days until deadline
+      const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+      if (dayDiff !== 1) {
+        modifier = `<span style="color: #a2c4c9;"> in ${dayDiff} days</span>`;
+      } else {
+        modifier = '<span style="color: #f9cb9c;"> tomorrow</span>';
+      }
+    }
+  } else {
+    modifier = '<span style="color: #b6d7a8;"> pick new path?</span>';
+  }
+  todoItem.querySelector('.todo-item-value').innerHTML = description + modifier;
+  // Append div to document
+  element.get('todo-item-list').appendChild(todoItem);
+  return todoItem as HTMLDivElement;
+}
+
+function cacheTasks() {
+  for (let i = 0; i < userData.tasks.length; i += 1) {
+    // Create todo item
+    taskCache.set(
+      createTodoItem(
+        userData.tasks[i].description,
+        userData.tasks[i].dateDue,
+        dateToday,
+      ),
+      userData.tasks[i],
+    );
+  }
+}
+
 function init() {
   updateDate();
   // Generate calendar then append it
   document
     .getElementsByClassName('dropdown')[0]
     .appendChild(generateCalendar(dateToday, false));
+  // Load user data from db once we figure that out
+  // loadDataJSON();
+  // Load todo-items from our user variable and also cache it
+  cacheTasks();
 }
 
 init();
@@ -389,38 +456,6 @@ function extractData(rawInput: string): [string, Date] {
   return counter !== 2 ? [exDesc, exDate] : [exDesc, undefined];
 }
 
-function createTodoItem(description: string, dueDate: Date, currentDate: Date) {
-  // Create a new div based on the current values via template
-  const tmp = document.importNode(
-    (element.get('todo-item-template') as HTMLTemplateElement).content,
-    true,
-  );
-  // This reallly should have its own method VVV
-  let modifier: string;
-  // Select the span element inside and set it equal to the console
-  if (dueDate === undefined) {
-    modifier = '<span style="color: #ffe599;"> sometime?</span>';
-  } else if (currentDate < dueDate) {
-    if (dueDate.getDate() === currentDate.getDate()) {
-      modifier = '<span style="color: #ea9999;"> today!</span>';
-    } else {
-      // Get difference in mili
-      const timeDiff = dueDate.getTime() - currentDate.getTime();
-      // Find number of days until deadline
-      const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-      if (dayDiff !== 1) {
-        modifier = `<span style="color: #a2c4c9;"> in ${dayDiff} days</span>`;
-      } else {
-        modifier = '<span style="color: #f9cb9c;"> tomorrow</span>';
-      }
-    }
-  } else {
-    modifier = '<span style="color: #b6d7a8;"> pick new path?</span>';
-  }
-  tmp.querySelector('.todo-item-value').innerHTML = description + modifier;
-  // Append div to document
-  element.get('todo-item-list').appendChild(tmp);
-}
 
 // Defines what happens when we press 'enter' in the console
 element
@@ -452,7 +487,11 @@ element
   .addEventListener('click', function removeTodoItem(e: MouseEvent) {
     const el = e.target as HTMLElement;
     if (el.nodeName === 'BUTTON') {
-      (el.parentNode as HTMLElement).remove();
+      // Register the actual div containing the full thing
+      const parent = (el.parentNode as HTMLDivElement);
+
+      userData.tasks.splice(userData.tasks.indexOf(taskCache.get(parent))
+      parent.remove();
     }
   });
 

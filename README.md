@@ -14,6 +14,28 @@ Visit the website at https://nostalgic-mcclintock-27a65d.netlify.app!
 [0830 SUN](#0830-SUN)  
 [0831 MON](#0831-MON)  
 [0901 TUE](#0901-TUE)
+[0903 THU](#0903-THU)
+
+## 0903 THU
+
+### IFE
+
+- We need some way to cache html documents
+  - init()
+    - loadDataJSON()
+      - caches user data from database
+    - cacheTasks()
+      - create a taskCache = Map<HTMLElement, TaskObject>
+        - Need to make an interface for the TaskObject
+      - for TaskObject in user.tasks
+        - create a todo-item from the info in this task
+        - link this todo-item with the taskobject
+  - on eventListener of button del
+    - find value() of this
+    - pop() it from the array
+    - then visually delete the HTMLElement
+  - on save()
+    - Replace db user data with our cached user data
 
 ## 0901 TUE
 

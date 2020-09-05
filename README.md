@@ -1,10 +1,10 @@
-# [Prompurr](https://nostalgic-mcclintock-27a65d.netlify.app)
+# [Prompurr.org](https://prompurr.org/)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/SpicyRicecaker/Prompurr?logo=Github&style=flat-square)
 ![GitHub repo size](https://img.shields.io/github/repo-size/SpicyRicecaker/Prompurr?logo=Github&style=flat-square)
 
 A progress-focused adaptive todolist. (Bad name ik I change later)  
-Visit the website at https://nostalgic-mcclintock-27a65d.netlify.app!
+The website might be down from time to time as I'm switching web servers and databases!
 
 # Progress Log
 
@@ -13,8 +13,34 @@ Visit the website at https://nostalgic-mcclintock-27a65d.netlify.app!
 [0829 SAT](#0829-SAT)  
 [0830 SUN](#0830-SUN)  
 [0831 MON](#0831-MON)  
-[0901 TUE](#0901-TUE)
+[0901 TUE](#0901-TUE)  
 [0903 THU](#0903-THU)
+[0905 FRI](#0904-FRI)
+
+## 0905 FRI
+
+Since we're now moving into CRUD, and the webpage is becoming dynamic, we need to look for web hosting solutions, and eventually also database solutions. The basic planned infrastructure for a server is shown below...
+
+- Overall
+  - Docker
+  - Apache **web server**
+- Frontend (client)
+  - Javascript/css/html
+- Backend (server-side)
+  - Node.js **backend/driver**
+  - MongoDB **database**
+
+Docker - seems like a good thing to invest in. There's two main options we have for web hosting: service or local. Services are too expensive/inconvenient for such a small scale application, and learning to create a web server locally is also good practice. For local web hosting, I don't really want to host on Windows OS, but neither can I spare a computer to install a linux server on. Therefore, either a vm or a container seems like the right call. So since Docker is the trend right now we might as well go for that
+
+Apache - seems like it's basically required for web servers
+
+Javascript/css/html - Need to do more research on XMLHTTP requests, and how the client makes a call to the server for data
+
+Node.js - I never really knew what node.js on the backend actually meant, but after trying to run a MongoDB call on the front end scripts file I realized that node.js on the backend literally means that the script is only seen and run by the server. In this area, we need to figure out how we are able to listen for incoming requests from the client, process them(CRUD on the MongoDB database) and send them out again. I have no, no idea how this works.
+
+MongoDB - Surprisingly the most simple thing on this entire list. We already have a database service setup and know how to connect it, after that it's really just CRUD syntax
+
+### Docker
 
 ## 0903 THU
 

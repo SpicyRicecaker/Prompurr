@@ -418,7 +418,10 @@ element
     if (el.nodeName === 'BUTTON') {
         // Register the actual div containing the full thing
         const parent = el.parentNode;
-        userData.tasks.splice(userData.tasks.indexOf(taskCache.get(parent)), parent.remove());
+        // Remove the corresponding map value & key pair
+        taskCache.delete(parent);
+        // Then delete the html
+        parent.remove();
     }
 });
 // On hover, show x

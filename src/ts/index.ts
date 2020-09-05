@@ -2,19 +2,23 @@
 // data from a file in the server, but in the case
 // that a request is invalid / there is a new user,
 // we'll use a guest template instead
-let userData = {
+
+// DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+const tempDate = new Date();
+tempDate.setDate(tempDate.getDate() + 1);
+const userData = {
   username: 'spicyricecaker',
   password: 'password',
   tasks: [
     {
-      description: 'example task',
+      description: 'Setup nginx to run on docker',
       dateCreated: new Date(),
-      dateDue: new Date(),
+      dateDue: tempDate,
     },
     {
-      description: 'example task 2',
+      description: 'Setup mongodb with node.js driver',
       dateCreated: new Date(),
-      dateDue: new Date(),
+      dateDue: tempDate,
     },
   ],
 };
@@ -456,7 +460,6 @@ function extractData(rawInput: string): [string, Date] {
   return counter !== 2 ? [exDesc, exDate] : [exDesc, undefined];
 }
 
-
 // Defines what happens when we press 'enter' in the console
 element
   .get('todo-textarea')
@@ -488,9 +491,10 @@ element
     const el = e.target as HTMLElement;
     if (el.nodeName === 'BUTTON') {
       // Register the actual div containing the full thing
-      const parent = (el.parentNode as HTMLDivElement);
-
-      userData.tasks.splice(userData.tasks.indexOf(taskCache.get(parent))
+      const parent = el.parentNode as HTMLDivElement;
+      // Remove the corresponding map value & key pair
+      taskCache.delete(parent);
+      // Then delete the html
       parent.remove();
     }
   });

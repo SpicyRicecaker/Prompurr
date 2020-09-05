@@ -1,0 +1,15 @@
+FROM node:latest
+# RUN command to make a folder
+RUN mkdir -p /app/src
+# Set the work directory to the created folder
+WORKDIR /app/src
+# Copy the package.json over 
+COPY package.json .
+# Install that 
+RUN npm install
+# Then copy the rest over
+COPY . .
+# Exposes port 3000 to the outside world
+EXPOSE 3000
+# Start the app
+CMD ["npm", "start"]

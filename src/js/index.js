@@ -1,20 +1,25 @@
+"use strict";
 // What will happen is that we'll try to load user
 // data from a file in the server, but in the case
 // that a request is invalid / there is a new user,
 // we'll use a guest template instead
-let userData = {
+// DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+const tempDate = new Date();
+tempDate.setDate(tempDate.getDate() + 1);
+// DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+const userData = {
     username: 'spicyricecaker',
     password: 'password',
     tasks: [
         {
-            description: 'example task',
+            description: 'Setup node.js https server',
             dateCreated: new Date(),
-            dateDue: new Date(),
+            dateDue: tempDate,
         },
         {
-            description: 'example task 2',
+            description: 'Tie in prompurr with that new server hopefully',
             dateCreated: new Date(),
-            dateDue: new Date(),
+            dateDue: tempDate,
         },
     ],
 };
@@ -25,26 +30,29 @@ const taskCache = new Map();
 // and a save button, which will write all info including tasks of current username
 // to a prompurrData.json file
 let dateToday;
-const elementIds = [
-    'todo-add',
-    'todo-imp-container',
-    'todo-textarea',
-    'todo-area',
-    'todo-item-area',
-    'todo-item-template',
-    'calendar-template',
-    'todo-item-list',
-    'title-date-time',
-    'todo-overlay',
-];
-const element = new Map();
-// Builds a lookup cache for faster element lookups
-function buildElementCache() {
-    for (let i = 0; i < elementIds.length; i += 1) {
-        element.set(elementIds[i], document.getElementById(elementIds[i]));
-    }
-}
-buildElementCache();
+// const elementIds: string[] = [
+//   'todo-add',
+//   'todo-imp-container',
+//   'todo-textarea',
+//   'todo-area',
+//   'todo-item-area',
+//   'todo-item-template',
+//   'calendar-template',
+//   'todo-item-list',
+//   'title-date-time',
+//   'todo-overlay',
+// ];
+// const element = new Map<string, HTMLElement>();
+// // Builds a lookup cache for faster element lookups
+// function buildElementCache() {
+//   for (let i = 0; i < elementIds.length; i += 1) {
+//     element.set(
+//       elementIds[i],
+//       document.getElementById(elementIds[i]) as HTMLElement,
+//     );
+//   }
+// }
+// buildElementCache();
 // Define an array of months
 const monthNames = [
     'January',
@@ -80,7 +88,8 @@ function generateCalendar(currentDate, visible) {
     const someDate = new Date();
     Object.assign(someDate, currentDate);
     // First create a calendar skeleton from the template
-    const documentFragment = document.importNode(element.get('calendar-template').content, true);
+    const documentFragment = document.importNode(document.getElementById('calendar-template')
+        .content, true);
     // We need to actually target the section because for some reason the importnode just imports
     // a document fragment
     const calendarSection = documentFragment.querySelector('section');
@@ -136,7 +145,7 @@ function generateCalendar(currentDate, visible) {
     }
     updateTableAndHeader();
     // Use event delegation to add an event listener to the calendar
-    calendarSection.addEventListener('click', function inputDateConsole(e) {
+    calendarSection.addEventListener('click', (e) => {
         // Make sure the the element that was selected was a td element
         const el = e.target;
         if (el.nodeName === 'TD') {
@@ -145,46 +154,38 @@ function generateCalendar(currentDate, visible) {
             // month dates greyed out...)
             if (el.innerHTML !== '&nbsp;') {
                 // Append the month and date to our juicy console rn
-                element.get('todo-textarea').value += ` ${monthNames[m]} ${el.innerHTML}`;
+                document.getElementById('todo-textarea').value += ` ${monthNames[m]} ${el.innerHTML}`;
             }
         }
         // May change later
         // KEEP FOCUSING THE TEXTBOX CHARLESTON
-        element.get('todo-textarea').focus();
+        document.getElementById('todo-textarea').focus();
         // COMPILE XD
-        element.get('todo-overlay').innerHTML = prompurrCompile(element.get('todo-textarea').value);
+        document.getElementById('todo-overlay').innerHTML = prompurrCompile(document.getElementById('todo-textarea').value);
     });
     // Also add event listeners to the buttons that will call generate calendar with a new date if needed
-    calendarSection
-        .querySelector('#calendar-arrow-left')
-        .addEventListener('click', () => {
+    calendarSection.querySelector('#calendar-arrow-left').addEventListener('click', () => {
         someDate.setMonth(m - 1);
         cell.setAttribute('id', '');
         updateTableAndHeader();
     });
-    calendarSection
-        .querySelector('#calendar-arrow-right')
-        .addEventListener('click', () => {
+    calendarSection.querySelector('#calendar-arrow-right').addEventListener('click', () => {
         someDate.setMonth(m + 1);
         cell.setAttribute('id', '');
         updateTableAndHeader();
     });
-    calendarSection
-        .querySelector('#calendar-reset')
-        .addEventListener('click', () => {
+    calendarSection.querySelector('#calendar-reset').addEventListener('click', () => {
         someDate.setMonth(cm);
         someDate.setFullYear(cy);
         updateTableAndHeader();
     });
-    calendarSection
-        .querySelector('#calendar-time-noon')
-        .addEventListener('click', () => {
-        element.get('todo-textarea').value += ' 12:00p';
+    calendarSection.querySelector('#calendar-time-noon').addEventListener('click', () => {
+        document.getElementById('todo-textarea').value +=
+            ' 12:00p';
     });
-    calendarSection
-        .querySelector('#calendar-time-midnight')
-        .addEventListener('click', () => {
-        element.get('todo-textarea').value += ' 11:59p';
+    calendarSection.querySelector('#calendar-time-midnight').addEventListener('click', () => {
+        document.getElementById('todo-textarea').value +=
+            ' 11:59p';
     });
     // calendarSection.querySelector('#calendar-time-other').addEventListener('click', ()=> {
     // })
@@ -204,14 +205,15 @@ function generateCalendar(currentDate, visible) {
     }
     return calendarSection;
 }
-function createTodoItem(description, dueDate, currentDate) {
+function createTodoItem(description, dueDate, currentDate, valid) {
     // Create a new div based on the current values via template
-    const documentFragment = document.importNode(element.get('todo-item-template').content, true);
+    const documentFragment = document.importNode(document.getElementById('todo-item-template')
+        .content, true);
     const todoItem = documentFragment.querySelector('.todo-item');
     // This reallly should have its own method VVV
     let modifier;
     // Select the span element inside and set it equal to the console
-    if (dueDate === undefined) {
+    if (!valid) {
         modifier = '<span style="color: #ffe599;"> sometime?</span>';
     }
     else if (currentDate < dueDate) {
@@ -234,15 +236,16 @@ function createTodoItem(description, dueDate, currentDate) {
     else {
         modifier = '<span style="color: #b6d7a8;"> pick new path?</span>';
     }
-    todoItem.querySelector('.todo-item-value').innerHTML = description + modifier;
+    todoItem.querySelector('.todo-item-value').innerHTML =
+        description + modifier;
     // Append div to document
-    element.get('todo-item-list').appendChild(todoItem);
+    document.getElementById('todo-item-list').appendChild(todoItem);
     return todoItem;
 }
 function cacheTasks() {
     for (let i = 0; i < userData.tasks.length; i += 1) {
         // Create todo item
-        taskCache.set(createTodoItem(userData.tasks[i].description, userData.tasks[i].dateDue, dateToday), userData.tasks[i]);
+        taskCache.set(createTodoItem(userData.tasks[i].description, userData.tasks[i].dateDue, dateToday, true), userData.tasks[i]);
     }
 }
 function init() {
@@ -280,8 +283,9 @@ function updateClock() {
 updateClock();
 function handleFocus() {
     // Replace console with button
-    element.get('todo-imp-container').style.display = 'none';
-    element.get('todo-add').style.display = 'block';
+    document.getElementById('todo-imp-container').style.display = 'none';
+    document.getElementById('todo-add').style.display =
+        'block';
     // Probably remove calendar as well
     document.getElementById('calendar-container').style.display = 'none';
 }
@@ -310,28 +314,27 @@ function hideOnBush(toHide, exceptions) {
     document.addEventListener('click', scanForClicks);
 }
 function openConsole(e) {
-    e.stopImmediatePropagation();
+    e.stopPropagation();
     // Replace button with console
-    element.get('todo-add').style.display = 'none';
-    element.get('todo-imp-container').style.display = 'block';
+    document.getElementById('todo-add').style.display =
+        'none';
+    document.getElementById('todo-imp-container').style.display = 'block';
     // Focus console
-    element.get('todo-textarea').focus();
+    document.getElementById('todo-textarea').focus();
     // Show calendar
     document.getElementById('calendar-container').style.display = 'block';
     // Define hide behavior
-    hideOnBush(element.get('todo-imp-container'), [
+    hideOnBush(document.getElementById('todo-imp-container'), [
         document.getElementsByClassName('center')[0],
     ]);
 }
 // Defines default add-todo clicked button behavior true
-element
-    .get('todo-add')
-    .addEventListener('click', (e) => openConsole(e));
+document.getElementById('todo-add').addEventListener('click', (e) => openConsole(e));
 // Takes console input and converts it into data
 function extractData(rawInput) {
     let exDesc;
-    let rawMonthDate;
-    let rawTime;
+    let rawMonthDate = '';
+    let rawTime = '';
     // First we gotta select the month and date
     // When we find a match, store it, and replace it with ''
     exDesc = rawInput.replaceAll(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}/gi, function findRemoveRawDate(raw) {
@@ -354,7 +357,7 @@ function extractData(rawInput) {
     let exMinute;
     let counter = 0;
     // If we matched a rawMonthDate
-    if (rawMonthDate !== undefined) {
+    if (rawMonthDate !== '') {
         // Set exMonth and exDay to it
         const splitMonthDate = rawMonthDate.split(/\s+/);
         exMonth = monthNames.indexOf(splitMonthDate[0]);
@@ -366,7 +369,7 @@ function extractData(rawInput) {
         exDay = dateToday.getDate();
     }
     // If we matched a time
-    if (rawTime !== undefined) {
+    if (rawTime !== '') {
         // Set hour & minute
         const splitHourMin = rawTime.split(':');
         exHour = parseInt(splitHourMin[0], 10);
@@ -389,31 +392,27 @@ function extractData(rawInput) {
     exDate.setHours(exHour);
     exDate.setMinutes(exMinute);
     // To find month and date, split our matched string and use substring
-    return counter !== 2 ? [exDesc, exDate] : [exDesc, undefined];
+    return counter !== 2 ? [exDesc, exDate, true] : [exDesc, exDate, false];
 }
 // Defines what happens when we press 'enter' in the console
-element
-    .get('todo-textarea')
-    .addEventListener('keydown', function consoleTodoItem(e) {
+document.getElementById('todo-textarea').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
-        const [exDesc, exDate] = extractData(this.value);
+        const [exDesc, exDate, valid] = extractData(e.currentTarget.value);
         // First we gotta extract the date from the string
         // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-        createTodoItem(exDesc, exDate, dateToday);
+        createTodoItem(exDesc, exDate, dateToday, valid);
         // Clear console
-        element.get('todo-textarea').value = '';
-        element.get('todo-textarea').style.height = 'auto';
+        e.currentTarget.value = '';
+        e.currentTarget.style.height = 'auto';
         // Clear overlay
-        element.get('todo-overlay').innerHTML = '';
+        document.getElementById('todo-overlay').innerHTML = '';
     }
 });
 // Event delegation to todo-item-area
 // Have to use 'as' profusely as a cast in typescript
 // On click, remove the item
-element
-    .get('todo-item-list')
-    .addEventListener('click', function removeTodoItem(e) {
+document.getElementById('todo-item-list').addEventListener('click', (e) => {
     const el = e.target;
     if (el.nodeName === 'BUTTON') {
         // Register the actual div containing the full thing
@@ -425,18 +424,14 @@ element
     }
 });
 // On hover, show x
-element
-    .get('todo-item-list')
-    .addEventListener('mouseover', function showTimes(e) {
+document.getElementById('todo-item-list').addEventListener('mouseover', (e) => {
     const el = e.target;
     if (el.nodeName === 'BUTTON') {
         el.innerHTML = '&times;';
     }
 });
 // On not hovering, show bullet
-element
-    .get('todo-item-list')
-    .addEventListener('mouseout', function showBull(e) {
+document.getElementById('todo-item-list').addEventListener('mouseout', (e) => {
     const el = e.target;
     if (el.nodeName === 'BUTTON') {
         el.innerHTML = '&bull;';
@@ -451,9 +446,7 @@ function convertRemToPixels(rem) {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 // On input to the console
-element
-    .get('todo-textarea')
-    .addEventListener('input', function updateSemantics() {
+document.getElementById('todo-textarea').addEventListener('input', (e) => {
     // Make sure to resize textarea if needed
     // Code inspired by https://www.geeksforgeeks.org/how-to-create-auto-resize-textarea-using-javascript-jquery/
     // Basically resets the height of the textarea, in which
@@ -461,20 +454,20 @@ element
     // textarea and put scrollbars on it
     // Then we take advantage of this calculation to find the true
     // scrollheight and set the height to it
-    this.style.height = 'auto';
-    this.style.height = `${this.scrollHeight - convertRemToPixels(2)}px`;
+    e.currentTarget.style.height = 'auto';
+    e.currentTarget.style.height = `${e.currentTarget.scrollHeight -
+        convertRemToPixels(2)}px`;
     const renderOverlay = () => {
-        element.get('todo-overlay').innerHTML = prompurrCompile(this.value);
+        document.getElementById('todo-overlay').innerHTML = prompurrCompile(e.currentTarget.value);
     };
     renderOverlay();
     // Register/record this date
     // Then eventually give suggestions on how to type this date
 });
 // On click of the button show cal
-document
-    .getElementById('title-date-time')
-    .addEventListener('click', function showHideCal() {
-    if (document.getElementById('calendar-container').style.display === 'none') {
+document.getElementById('title-date-time').addEventListener('click', () => {
+    if (document.getElementById('calendar-container').style
+        .display === 'none') {
         document.getElementById('calendar-container').style.display = 'block';
         hideOnBush(document.getElementsByClassName('center')[0], [
             document.getElementById('todo-imp-container'),
@@ -485,10 +478,6 @@ document
     }
 });
 // On save we're looking to make a server request to write current data
-document
-    .getElementById('save-data')
-    .addEventListener('click', function writeData() { });
+document.getElementById('save-data').addEventListener('click', () => { });
 // On load we're looking to make a server request to load json data
-document
-    .getElementById('load-data')
-    .addEventListener('click', function saveData() { });
+document.getElementById('load-data').addEventListener('click', () => { });

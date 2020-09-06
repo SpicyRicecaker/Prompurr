@@ -15,9 +15,14 @@ The website might be down from time to time as I'm switching web servers and dat
 [0831 MON](#0831-MON)  
 [0901 TUE](#0901-TUE)  
 [0903 THU](#0903-THU)
-[0905 FRI](#0904-FRI)
+[0904 FRI](#0904-FRI)
+[0905 SAT](#0905-SAT)
 
-## 0905 FRI
+## 0905 SAT
+
+### Node.js Backend
+
+## 0904 FRI
 
 Since we're now moving into CRUD, and the webpage is becoming dynamic, we need to look for web hosting solutions, and eventually also database solutions. The basic planned infrastructure for a server is shown below...
 

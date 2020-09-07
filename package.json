@@ -1,12 +1,15 @@
 {
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "name": "prompurr",
   "version": "1.0.0",
   "description": "A progress-focused adaptive todolist!",
-  "main": "index.js",
+  "main": "packages/backend/dist/index.js",
   "scripts": {
-    "start": "node index",
-    "dev": "concurrently --kill-others \"npx tsc -w\" \"sass --watch ./src/scss/style.scss ./public/styles/style.css\"",
-    "live": "nodemon index"
+    "dev": "lerna run dev",
+    "live": "lerna run live"
   },
   "repository": {
     "type": "git",
@@ -30,9 +33,9 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
+    "lerna": "^3.22.1",
     "nodemon": "^2.0.4",
     "prettier": "^2.1.1",
     "typescript": "^4.0.2"
-  },
-  "dependencies": {}
+  }
 }

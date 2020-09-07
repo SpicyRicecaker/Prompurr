@@ -9,7 +9,7 @@
   "main": "packages/backend/dist/index.js",
   "scripts": {
     "dev": "lerna run dev",
-    "live": "lerna run live"
+    "live": "lerna run watch-node"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,6 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
     "lerna": "^3.22.1",
-    "nodemon": "^2.0.4",
     "prettier": "^2.1.1",
     "typescript": "^4.0.2"
   }

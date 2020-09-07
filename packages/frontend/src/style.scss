@@ -15,6 +15,7 @@ pre {
 @mixin flex-x {
   display: flex;
   justify-content: center;
+  color: black;
 }
 
 @mixin flex-y {

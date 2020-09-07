@@ -1,34 +1,40 @@
-// const http = require('http');
+// // const http = require('http');
 
 import { ServerResponse } from 'http';
 
-// const hostname = '127.0.0.1';
-// const port = 3000;
+// import { ServerResponse } from 'http';
 
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader('Content-Type', 'text/plain');
-//   res.end('Hello World');
-// });
+// // const hostname = '127.0.0.1';
+// // const port = 3000;
 
-// server.listen(port, hostname, () => {
-//   console.log(`Server running at http://${hostname}:${port}/`);
-// });
+// // const server = http.createServer((req, res) => {
+// //   res.statusCode = 200;
+// //   res.setHeader('Content-Type', 'text/plain');
+// //   res.end('Hello World');
+// // });
+
+// // server.listen(port, hostname, () => {
+// //   console.log(`Server running at http://${hostname}:${port}/`);
+// // });
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
 
-// First look for env variable, then look for 5000
+// // First look for env variable, then look for 5000
 const port = process.env.PORT || 3000;
 
-// An http server is based off of request and response
+// // An http server is based off of request and response
 const server = http.createServer((req: Request, res: ServerResponse) => {
   // Build filePath
   const filePath = path.join(
     __dirname,
-    'public',
+    '..',
+    '..',
+    'frontend',
+    'dist',
     req.url === '/' ? 'index.html' : req.url,
   );
+  console.log(filePath);
   // Get extension of file
   const extname = path.extname(filePath);
   // Initial content type
@@ -47,18 +53,29 @@ const server = http.createServer((req: Request, res: ServerResponse) => {
       contentType = 'application/json';
       break;
     }
+    case '.png':{
+      contentType = 'image/png';
+      break;
+    }
+    case '.jpg': {
+      contentType = 'image/jpg';
+      break;
+    }
     default: {
       break;
     }
   }
   // Read file
-  fs.readFile(filePath, (err: Error, content: any) => {
+  fs.readFile(filePath, (err: any, content: any) => {
     if (err) {
       if (err.code === 'ENOENT') {
         // Page isn't found?
         fs.readFile(
           path.join(__dirname, 'public', '404.html'),
           (err1: Error, readContent: any) => {
+            if (err1) {
+              throw err;
+            }
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(readContent, 'utf-8');
           },
@@ -107,3 +124,5 @@ const server = http.createServer((req: Request, res: ServerResponse) => {
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+// console.log('hi');

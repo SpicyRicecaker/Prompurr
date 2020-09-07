@@ -1,25 +1,27 @@
 "use strict";
-// const http = require('http');
+// // const http = require('http');
 Object.defineProperty(exports, "__esModule", { value: true });
-// const hostname = '127.0.0.1';
-// const port = 3000;
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader('Content-Type', 'text/plain');
-//   res.end('Hello World');
-// });
-// server.listen(port, hostname, () => {
-//   console.log(`Server running at http://${hostname}:${port}/`);
-// });
+// import { ServerResponse } from 'http';
+// // const hostname = '127.0.0.1';
+// // const port = 3000;
+// // const server = http.createServer((req, res) => {
+// //   res.statusCode = 200;
+// //   res.setHeader('Content-Type', 'text/plain');
+// //   res.end('Hello World');
+// // });
+// // server.listen(port, hostname, () => {
+// //   console.log(`Server running at http://${hostname}:${port}/`);
+// // });
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
-// First look for env variable, then look for 5000
+// // First look for env variable, then look for 5000
 const port = process.env.PORT || 3000;
-// An http server is based off of request and response
+// // An http server is based off of request and response
 const server = http.createServer((req, res) => {
     // Build filePath
-    const filePath = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
+    const filePath = path.join(__dirname, '..', '..', 'frontend', 'dist', req.url === '/' ? 'index.html' : req.url);
+    console.log(filePath);
     // Get extension of file
     const extname = path.extname(filePath);
     // Initial content type
@@ -48,6 +50,9 @@ const server = http.createServer((req, res) => {
             if (err.code === 'ENOENT') {
                 // Page isn't found?
                 fs.readFile(path.join(__dirname, 'public', '404.html'), (err1, readContent) => {
+                    if (err1) {
+                        throw err;
+                    }
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(readContent, 'utf-8');
                 });
@@ -96,3 +101,4 @@ const server = http.createServer((req, res) => {
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+// console.log('hi');

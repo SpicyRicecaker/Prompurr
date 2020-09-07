@@ -14,13 +14,31 @@ The website might be down from time to time as I'm switching web servers and dat
 [0830 SUN](#0830-SUN)  
 [0831 MON](#0831-MON)  
 [0901 TUE](#0901-TUE)  
-[0903 THU](#0903-THU)
-[0904 FRI](#0904-FRI)
-[0905 SAT](#0905-SAT)
+[0903 THU](#0903-THU)  
+[0904 FRI](#0904-FRI)  
+[0907 MON](#0907-MON)
 
-## 0905 SAT
+## 0907 MON - More backend-frontend
 
-### Node.js Backend
+### All
+
+- Need some way to organize the frontend and backend, as it's currently impossible to manage
+- Converting to a lerna-based monorepo
+
+### Front
+
+- Implement AJAX HTTP requests for load & save buttons (root user for now xD)
+
+### Back
+
+- Node.js REST API
+  - On GET request, read JSON file and return value
+  - On POST request, read usr var and write into JSON file
+
+### Future
+
+- Google OAuth for logins
+- Express framework on top of node.js ASAP
 
 ## 0904 FRI
 

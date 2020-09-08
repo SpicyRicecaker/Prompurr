@@ -4,7 +4,7 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs');
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Frontend path
 const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'dist');
@@ -61,7 +61,7 @@ const server = http.createServer((req: Request, res: ServerResponse) => {
           res.writeHead(500, { 'Content-Type': 'text/html' });
           res.end(
             "<h1> We're sorry! <h1> <h2> Our server is having a big struggle <h2>",
-            'utf-8'
+            'utf-8',
           );
           break;
         }

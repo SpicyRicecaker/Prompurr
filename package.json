@@ -8,7 +8,7 @@
   "description": "A progress-focused adaptive todolist!",
   "main": "packages/backend/dist/index.js",
   "scripts": {
-    "start": "node packages/backend/dist/index",
+    "start": "node packages/backend/dist/index.js",
     "dev": "lerna run dev",
     "live": "lerna run watch-node"
   },

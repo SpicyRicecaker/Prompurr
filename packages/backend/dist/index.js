@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
-const port = 3000;
+const port = process.env.PORT || 3000;
 // Frontend path
 const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'dist');
 const server = http.createServer((req, res) => {

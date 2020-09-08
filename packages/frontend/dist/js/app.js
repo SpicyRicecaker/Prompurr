@@ -480,4 +480,5 @@ document.getElementById('title-date-time').addEventListener('click', () => {
 // On save we're looking to make a server request to write current data
 document.getElementById('save-data').addEventListener('click', () => { });
 // On load we're looking to make a server request to load json data
-document.getElementById('load-data').addEventListener('click', () => { });
+document.getElementById('load-data').addEventListener('click', () => {
+});

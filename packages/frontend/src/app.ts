@@ -616,4 +616,5 @@ function convertRemToPixels(rem: number) {
 // On load we're looking to make a server request to load json data
 (document.getElementById(
   'load-data',
-) as HTMLButtonElement).addEventListener('click', () => {});
+) as HTMLButtonElement).addEventListener('click', () => {
+});

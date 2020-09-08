@@ -1,46 +1,29 @@
-// // const http = require('http');
-
 import { ServerResponse } from 'http';
 
-// import { ServerResponse } from 'http';
-
-// // const hostname = '127.0.0.1';
-// // const port = 3000;
-
-// // const server = http.createServer((req, res) => {
-// //   res.statusCode = 200;
-// //   res.setHeader('Content-Type', 'text/plain');
-// //   res.end('Hello World');
-// // });
-
-// // server.listen(port, hostname, () => {
-// //   console.log(`Server running at http://${hostname}:${port}/`);
-// // });
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
 
-// // First look for env variable, then look for 5000
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-// // An http server is based off of request and response
+// Frontend path
+const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'dist');
+
 const server = http.createServer((req: Request, res: ServerResponse) => {
-  // Build filePath
-  const filePath = path.join(
-    __dirname,
-    '..',
-    '..',
-    'frontend',
-    'dist',
+  // Get the path of the request. If we're requesting the root webpage (i.e. prompurr.org) then
+  // return index.html, otherwise return whatever the request is
+  const reqPath = path.join(
+    frontendPath,
     req.url === '/' ? 'index.html' : req.url,
   );
-  console.log(filePath);
-  // Get extension of file
-  const extname = path.extname(filePath);
-  // Initial content type
+  // At this point we have to set the content type for this request
+  // let's default to html, because that's our index.html
+  // To get the content type we first have to know the extname
+  const extName = path.extname(reqPath);
   let contentType = 'text/html';
-  // Check ext set content type
-  switch (extname) {
+  // Then return the right MIME type given the extname
+  switch (extName) {
+    // Javascript
     case '.js': {
       contentType = 'text/javascript';
       break;
@@ -49,80 +32,54 @@ const server = http.createServer((req: Request, res: ServerResponse) => {
       contentType = 'text/css';
       break;
     }
-    case '.json': {
-      contentType = 'application/json';
-      break;
-    }
-    case '.png':{
-      contentType = 'image/png';
-      break;
-    }
-    case '.jpg': {
-      contentType = 'image/jpg';
-      break;
-    }
     default: {
       break;
     }
   }
-  // Read file
-  fs.readFile(filePath, (err: any, content: any) => {
+  // We take this content type and serve out the content
+  // to server the content we first have to read it
+  fs.readFile(reqPath, (err: any, data: any) => {
+    // There are a couple possible error codes I think
     if (err) {
-      if (err.code === 'ENOENT') {
-        // Page isn't found?
-        fs.readFile(
-          path.join(__dirname, 'public', '404.html'),
-          (err1: Error, readContent: any) => {
-            if (err1) {
-              throw err;
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(readContent, 'utf-8');
-          },
-        );
-      } else {
-        // Some server error
-        res.writeHead(500);
-        res.end(`Server Error ${err.code}`);
+      switch (err.code) {
+        case 'ENOENT': {
+          // File not found
+          // In this case, we probably need to read
+          // our 404.html file and write that
+          fs.readFile(
+            path.join(frontendPath, '404.html'),
+            (err1: any, data1: any) => {
+              // 404 file not found
+              res.writeHead(200, { 'Content-Type': 'text/html' });
+              res.end(data1, 'utf-8');
+            },
+          );
+          break;
+        }
+        case 500: {
+          // Internal server error
+          res.writeHead(500, { 'Content-Type': 'text/html' });
+          res.end(
+            "<h1> We're sorry! <h1> <h2> Our server is having a big struggle <h2>",
+            'utf-8'
+          );
+          break;
+        }
+        default: {
+          // Some other error
+          res.end();
+          break;
+        }
       }
+      // res.end();
     } else {
-      // Success
+      // Otherwise we can do some stuff
       res.writeHead(200, { 'Content-Type': contentType });
-      res.end(content, 'utf-8');
+      res.end(data, 'utf-8');
     }
   });
-  // switch (req.url) {
-  // If root
-  // case '/': {
-  //   // Writehead is like setting the 'style' of a brush stroke (I think)
-  //   fs.readFile(path.join(__dirname, 'index.html'), 'utf8', (err, data) => {
-  //     if (err) {
-  //       throw err;
-  //     }
-  //     res.writeHead(200, { 'Content-Type': 'text/html' });
-  //     res.end(data);
-  //   });
-  // break;
-  // }
-  // IF >>>> WE'RE CALLING THE DATABASE <<<<
-  // case '/api/users': {
-  // const users = [
-  //   { name: 'bob', age: 40 },
-  //   { name: 'joe', age: 30 },
-  // ];
-  // res.writeHead(200, {'Content-Type' : 'application/json'})
-  // res.end(JSON.stringify(users));
-  // break;
-  // }
-  // default: {
-  // res.end('invalid webpage?');
-  // break;
-  // }
-  // }
 });
 
 server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server running at port ${port}`);
 });
-
-// console.log('hi');

@@ -1,10 +1,11 @@
-# [Prompurr.org](https://prompurr.org/)
+# [Prompurr.herokuapp.com](https://prompurr.herokuapp.com/)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/SpicyRicecaker/Prompurr?logo=Github&style=flat-square)
 ![GitHub repo size](https://img.shields.io/github/repo-size/SpicyRicecaker/Prompurr?logo=Github&style=flat-square)
+![Netlify](https://img.shields.io/netlify/18b5de3e-9000-45b9-8f54-86e665df0eda?logo=netlify&style=flat-square)
 
 A progress-focused adaptive todolist. (Bad name ik I change later)  
-The website might be down from time to time as I'm switching web servers and databases!
+Currently the [prompurr.org](https://prompurr.org/) subdomain can't be added to heroku for some reason, so we're temporarily using netlify for static hosting and heroku for dynamic. 
 
 # Progress Log
 
@@ -16,7 +17,12 @@ The website might be down from time to time as I'm switching web servers and dat
 [0901 TUE](#0901-TUE)  
 [0903 THU](#0903-THU)  
 [0904 FRI](#0904-FRI)  
-[0907 MON](#0907-MON)
+[0907 MON](#0907-MON)  
+[0908 TUE](#0908-TUE)
+
+## 0908 TUE - Temp deployment
+
+Heroku while developing AJAX + REST API
 
 ## 0907 MON - More backend-frontend
 

@@ -57,6 +57,7 @@ function updateDate() {
     dateToday = new Date();
 }
 const cacheToUser = () => {
+    userData.tasks = [];
     return new Promise((resolve) => {
         taskCache.forEach((value) => {
             userData.tasks.push(value);
@@ -509,13 +510,6 @@ document.getElementById('save-data').addEventListener('click', () => {
 });
 // On load we're looking to make a server request to load json data
 document.getElementById('load-data').addEventListener('click', () => {
-    // First clear html
-    taskCache.forEach((value, key) => {
-        // Remove from dom
-        key.remove();
-        // Delete from cache
-        taskCache.delete(key);
-    });
     sendHttpRequest('GET', `${window.location.href}data.json`)
         .then((data) => {
         // userData = JSON.parse(data);
@@ -523,6 +517,15 @@ document.getElementById('load-data').addEventListener('click', () => {
         // set the httpRequest.responseType to json
         userData = data;
     })
-        .then((res) => cacheTasks())
+        .then((res) => {
+        // First clear html
+        taskCache.forEach((value, key) => {
+            // Remove from dom
+            key.remove();
+            // Delete from cache
+            taskCache.delete(key);
+        });
+        cacheTasks();
+    })
         .catch((err) => console.log(`file not found: ${err}`));
 });

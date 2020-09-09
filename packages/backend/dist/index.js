@@ -87,6 +87,7 @@ const server = http.createServer((req, res) => {
             break;
         }
         case 'POST': {
+            console.log('post request');
             req.on('data', (chunk) => {
                 chunks.push(chunk);
                 // Really scuffed anti-flood
@@ -100,6 +101,7 @@ const server = http.createServer((req, res) => {
                 // Literally just write to file whatever
                 switch (req.url) {
                     case '/data.json': {
+                        console.log('hihihi');
                         // Write to file
                         fs.writeFile(path.join(backendPath, req.url), data, (err) => {
                             if (err) {

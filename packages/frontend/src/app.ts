@@ -80,6 +80,7 @@ function updateDate() {
 }
 
 const cacheToUser = () => {
+  userData.tasks = [];
   return new Promise((resolve) => {
     taskCache.forEach((value: task) => {
       userData.tasks.push(value);
@@ -668,13 +669,6 @@ function convertRemToPixels(rem: number) {
 (document.getElementById('load-data') as HTMLButtonElement).addEventListener(
   'click',
   () => {
-    // First clear html
-    taskCache.forEach((value: task, key: HTMLDivElement) => {
-      // Remove from dom
-      key.remove();
-      // Delete from cache
-      taskCache.delete(key);
-    });
     sendHttpRequest('GET', `${window.location.href}data.json`)
       .then((data: any) => {
         // userData = JSON.parse(data);
@@ -682,7 +676,16 @@ function convertRemToPixels(rem: number) {
         // set the httpRequest.responseType to json
         userData = data;
       })
-      .then((res) => cacheTasks())
+      .then((res) => {
+        // First clear html
+        taskCache.forEach((value: task, key: HTMLDivElement) => {
+          // Remove from dom
+          key.remove();
+          // Delete from cache
+          taskCache.delete(key);
+        });
+        cacheTasks();
+      })
       .catch((err) => console.log(`file not found: ${err}`));
   },
 );

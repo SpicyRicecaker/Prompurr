@@ -3,25 +3,10 @@
 // data from a file in the server, but in the case
 // that a request is invalid / there is a new user,
 // we'll use a guest template instead
-// DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-const tempDate = new Date();
-tempDate.setDate(tempDate.getDate() + 1);
-// DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-const userData = {
-    username: 'spicyricecaker',
-    password: 'password',
-    tasks: [
-        {
-            description: 'Setup node.js https server',
-            dateCreated: new Date(),
-            dateDue: tempDate,
-        },
-        {
-            description: 'Tie in prompurr with that new server hopefully',
-            dateCreated: new Date(),
-            dateDue: tempDate,
-        },
-    ],
+let userData = {
+    username: 'bob1',
+    password: 'joe2',
+    tasks: [],
 };
 // Cache of currently loaded tasks
 const taskCache = new Map();
@@ -71,6 +56,14 @@ const monthNames = [
 function updateDate() {
     dateToday = new Date();
 }
+const cacheToUser = () => {
+    return new Promise((resolve) => {
+        taskCache.forEach((value) => {
+            userData.tasks.push(value);
+        });
+        resolve();
+    });
+};
 // function replaceElement(toReplace: HTMLElement, toAppend: HTMLElement) {
 //   const p = toReplace.parentElement;
 //   toReplace.remove();
@@ -205,7 +198,7 @@ function generateCalendar(currentDate, visible) {
     }
     return calendarSection;
 }
-function createTodoItem(description, dueDate, currentDate, valid) {
+function createTodoItem(description, currentDate, dueDate, valid) {
     // Create a new div based on the current values via template
     const documentFragment = document.importNode(document.getElementById('todo-item-template')
         .content, true);
@@ -245,9 +238,32 @@ function createTodoItem(description, dueDate, currentDate, valid) {
 function cacheTasks() {
     for (let i = 0; i < userData.tasks.length; i += 1) {
         // Create todo item
-        taskCache.set(createTodoItem(userData.tasks[i].description, userData.tasks[i].dateDue, dateToday, true), userData.tasks[i]);
+        taskCache.set(createTodoItem(userData.tasks[i].description, new Date(userData.tasks[i].dateCreated), new Date(userData.tasks[i].dateDue), true), userData.tasks[i]);
     }
 }
+// Makes a request to the server to
+// retrieve the json data and returns it
+const sendHttpRequest = (method, url, data) => {
+    return new Promise((resolve, reject) => {
+        // First create a request
+        const httpRequest = new XMLHttpRequest();
+        // Now we need to open it
+        // Request method, url, async t/f
+        httpRequest.open(method, url, true);
+        // Now onready state 4, when we're read to serve the data
+        httpRequest.responseType = 'json';
+        httpRequest.onload = () => {
+            if (httpRequest.status >= 400) {
+                reject(httpRequest.response);
+            }
+            resolve(httpRequest.response);
+        };
+        httpRequest.onerror = () => {
+            reject();
+        };
+        httpRequest.send(data);
+    });
+};
 function init() {
     updateDate();
     // Generate calendar then append it
@@ -255,9 +271,13 @@ function init() {
         .getElementsByClassName('dropdown')[0]
         .appendChild(generateCalendar(dateToday, false));
     // Load user data from db once we figure that out
-    // loadDataJSON();
+    // loadDataJSON()
+    //   .then((data) => {
+    //     userData = JSON.parse(data);
+    //   })
+    //   .then((res) => cacheTasks())
+    //   .catch((err) => console.log(`file not found: ${err}`));
     // Load todo-items from our user variable and also cache it
-    cacheTasks();
 }
 init();
 function updateClock() {
@@ -401,7 +421,11 @@ document.getElementById('todo-textarea').addEventListener('keydown', (e) => {
         const [exDesc, exDate, valid] = extractData(e.currentTarget.value);
         // First we gotta extract the date from the string
         // DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-        createTodoItem(exDesc, exDate, dateToday, valid);
+        taskCache.set(createTodoItem(exDesc, dateToday, exDate, valid), {
+            description: exDesc,
+            dateCreated: dateToday,
+            dateDue: exDate,
+        });
         // Clear console
         e.currentTarget.value = '';
         e.currentTarget.style.height = 'auto';
@@ -478,7 +502,27 @@ document.getElementById('title-date-time').addEventListener('click', () => {
     }
 });
 // On save we're looking to make a server request to write current data
-document.getElementById('save-data').addEventListener('click', () => { });
+document.getElementById('save-data').addEventListener('click', () => {
+    cacheToUser().then((none) => {
+        sendHttpRequest('POST', 'http://localhost:3000/data.json', JSON.stringify(userData));
+    });
+});
 // On load we're looking to make a server request to load json data
 document.getElementById('load-data').addEventListener('click', () => {
+    // First clear html
+    taskCache.forEach((value, key) => {
+        // Remove from dom
+        key.remove();
+        // Delete from cache
+        taskCache.delete(key);
+    });
+    sendHttpRequest('GET', 'http://localhost:3000/data.json')
+        .then((data) => {
+        // userData = JSON.parse(data);
+        // we don't need JSON.parse if we
+        // set the httpRequest.responseType to json
+        userData = data;
+    })
+        .then((res) => cacheTasks())
+        .catch((err) => console.log(`file not found: ${err}`));
 });

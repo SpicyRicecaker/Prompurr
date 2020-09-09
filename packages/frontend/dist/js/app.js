@@ -56,9 +56,9 @@ const monthNames = [
 function updateDate() {
     dateToday = new Date();
 }
-const cacheToUser = () => {
-    userData.tasks = [];
+const flushCacheToUser = () => {
     return new Promise((resolve) => {
+        userData.tasks = [];
         taskCache.forEach((value) => {
             userData.tasks.push(value);
         });
@@ -236,35 +236,12 @@ function createTodoItem(description, currentDate, dueDate, valid) {
     document.getElementById('todo-item-list').appendChild(todoItem);
     return todoItem;
 }
-function cacheTasks() {
+function cacheUserTasks() {
     for (let i = 0; i < userData.tasks.length; i += 1) {
         // Create todo item
         taskCache.set(createTodoItem(userData.tasks[i].description, new Date(userData.tasks[i].dateCreated), new Date(userData.tasks[i].dateDue), true), userData.tasks[i]);
     }
 }
-// Makes a request to the server to
-// retrieve the json data and returns it
-const sendHttpRequest = (method, url, data) => {
-    return new Promise((resolve, reject) => {
-        // First create a request
-        const httpRequest = new XMLHttpRequest();
-        // Now we need to open it
-        // Request method, url, async t/f
-        httpRequest.open(method, url, true);
-        // Now onready state 4, when we're read to serve the data
-        httpRequest.responseType = 'json';
-        httpRequest.onload = () => {
-            if (httpRequest.status >= 400) {
-                reject(httpRequest.response);
-            }
-            resolve(httpRequest.response);
-        };
-        httpRequest.onerror = () => {
-            reject();
-        };
-        httpRequest.send(data);
-    });
-};
 function init() {
     updateDate();
     // Generate calendar then append it
@@ -504,28 +481,23 @@ document.getElementById('title-date-time').addEventListener('click', () => {
 });
 // On save we're looking to make a server request to write current data
 document.getElementById('save-data').addEventListener('click', () => {
-    cacheToUser().then((none) => {
-        sendHttpRequest('POST', `${window.location.href}data.json`, JSON.stringify(userData));
+    flushCacheToUser().then((none) => {
+        fetch('/data.json', { method: 'POST', body: JSON.stringify(userData) });
     });
 });
 // On load we're looking to make a server request to load json data
 document.getElementById('load-data').addEventListener('click', () => {
-    sendHttpRequest('GET', `${window.location.href}data.json`)
+    fetch('/data.json')
+        .then((res) => res.json())
         .then((data) => {
-        // userData = JSON.parse(data);
-        // we don't need JSON.parse if we
-        // set the httpRequest.responseType to json
         userData = data;
-    })
-        .then((res) => {
-        // First clear html
         taskCache.forEach((value, key) => {
             // Remove from dom
             key.remove();
             // Delete from cache
             taskCache.delete(key);
         });
-        cacheTasks();
+        cacheUserTasks();
     })
-        .catch((err) => console.log(`file not found: ${err}`));
+        .catch((err) => console.log(err));
 });

@@ -657,7 +657,7 @@ function convertRemToPixels(rem: number) {
     cacheToUser().then((none) => {
       sendHttpRequest(
         'POST',
-        'http://localhost:3000/data.json',
+        `${window.location.href}data.json`,
         JSON.stringify(userData),
       );
     });
@@ -675,7 +675,7 @@ function convertRemToPixels(rem: number) {
       // Delete from cache
       taskCache.delete(key);
     });
-    sendHttpRequest('GET', 'http://localhost:3000/data.json')
+    sendHttpRequest('GET', `${window.location.href}data.json`)
       .then((data: any) => {
         // userData = JSON.parse(data);
         // we don't need JSON.parse if we

@@ -504,7 +504,7 @@ document.getElementById('title-date-time').addEventListener('click', () => {
 // On save we're looking to make a server request to write current data
 document.getElementById('save-data').addEventListener('click', () => {
     cacheToUser().then((none) => {
-        sendHttpRequest('POST', 'http://localhost:3000/data.json', JSON.stringify(userData));
+        sendHttpRequest('POST', `${window.location.href}data.json`, JSON.stringify(userData));
     });
 });
 // On load we're looking to make a server request to load json data
@@ -516,7 +516,7 @@ document.getElementById('load-data').addEventListener('click', () => {
         // Delete from cache
         taskCache.delete(key);
     });
-    sendHttpRequest('GET', 'http://localhost:3000/data.json')
+    sendHttpRequest('GET', `${window.location.href}data.json`)
         .then((data) => {
         // userData = JSON.parse(data);
         // we don't need JSON.parse if we

@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently --kill-others \"yarn watch-node\" \"yarn watch-ts\"",
+    "dev": "concurrently --kill-others \"yarn watch-ts\"",
     "watch-ts": "tsc -w",
     "watch-node": "ts-node-dev src/index"
   },

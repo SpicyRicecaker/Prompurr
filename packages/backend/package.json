@@ -1,13 +1,17 @@
 {
-  "name": "backend",
+  "name": "@prompurr/backend",
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently --kill-others \"yarn watch-ts\"",
+    "dev": "concurrently \"yarn watch-ts\"",
     "watch-ts": "tsc -w",
     "watch-node": "ts-node-dev src/index"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@prompurr/common": "1.0.0",
+    "express": "^4.17.1"
+  },
   "devDependencies": {
+    "@types/express": "^4.17.8",
     "@types/node": "^14.6.4",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",

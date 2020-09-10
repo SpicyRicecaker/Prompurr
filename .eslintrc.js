@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2020: true,
   },
-  extends: ['airbnb-base', 'prettier'],
+  extends: ['airbnb-base', 'prettier', 'plugin:import/typescript'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 11,
@@ -11,12 +11,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    quotes: [
-      'error',
-      'single',
-      { avoidEscape: true, allowTemplateLiterals: false },
-    ],
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    // 'no-unused-vars': 'off',
+    // '@typescript-eslint/no-unused-vars': ['error'],
   },
 };

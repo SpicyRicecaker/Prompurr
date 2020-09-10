@@ -4,8 +4,9 @@
 // that a request is invalid / there is a new user,
 // we'll use a guest template instead
 let userData = {
-    username: 'bob1',
-    password: 'joe2',
+    username: 'guest',
+    password: 'password',
+    id: 1,
     tasks: [],
 };
 // Cache of currently loaded tasks
@@ -481,13 +482,20 @@ document.getElementById('title-date-time').addEventListener('click', () => {
 });
 // On save we're looking to make a server request to write current data
 document.getElementById('save-data').addEventListener('click', () => {
-    flushCacheToUser().then((none) => {
-        fetch('/data.json', { method: 'POST', body: JSON.stringify(userData) });
+    flushCacheToUser().then(() => {
+        console.log(JSON.stringify(userData));
+        fetch(`/api/users/${userData.username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+            },
+            body: JSON.stringify(userData),
+        });
     });
 });
 // On load we're looking to make a server request to load json data
 document.getElementById('load-data').addEventListener('click', () => {
-    fetch('/data.json')
+    fetch(`/api/users/${userData.username}`)
         .then((res) => res.json())
         .then((data) => {
         userData = data;

@@ -15,12 +15,14 @@ interface task {
 interface user {
   username: string;
   password: string;
+  id: number;
   tasks: Array<task>;
 }
 
 let userData: user = {
-  username: 'bob1',
-  password: 'joe2',
+  username: 'guest',
+  password: 'password',
+  id: 1,
   tasks: [],
 };
 
@@ -624,8 +626,15 @@ function convertRemToPixels(rem: number) {
 (document.getElementById('save-data') as HTMLButtonElement).addEventListener(
   'click',
   () => {
-    flushCacheToUser().then((none) => {
-      fetch('/data.json', { method: 'POST', body: JSON.stringify(userData) })
+    flushCacheToUser().then(() => {
+      console.log(JSON.stringify(userData));
+      fetch(`/api/users/${userData.username}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify(userData),
+      });
     });
   },
 );
@@ -634,7 +643,7 @@ function convertRemToPixels(rem: number) {
 (document.getElementById('load-data') as HTMLButtonElement).addEventListener(
   'click',
   () => {
-    fetch('/data.json')
+    fetch(`/api/users/${userData.username}`)
       .then((res) => res.json())
       .then((data) => {
         userData = data;

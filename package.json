@@ -9,8 +9,8 @@
   "main": "packages/backend/dist/index.js",
   "scripts": {
     "start": "node packages/backend/dist/index.js",
-    "dev": "lerna run dev",
-    "live": "lerna run watch-node"
+    "dev": "lerna run dev --stream --no-sort --concurrency 4",
+    "live": "lerna run watch-node --stream --no-sort --concurrency 4"
   },
   "repository": {
     "type": "git",
@@ -24,18 +24,5 @@
   "bugs": {
     "url": "https://github.com/SpicyRicecaker/Prompurr/issues"
   },
-  "homepage": "https://github.com/SpicyRicecaker/Prompurr#readme",
-  "devDependencies": {
-    "@types/node": "^14.6.4",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "@typescript-eslint/parser": "^4.0.1",
-    "concurrently": "^5.3.0",
-    "eslint": "^7.8.1",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.22.0",
-    "lerna": "^3.22.1",
-    "prettier": "^2.1.1",
-    "typescript": "^4.0.2"
-  }
+  "homepage": "https://github.com/SpicyRicecaker/Prompurr#readme"
 }

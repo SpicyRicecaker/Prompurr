@@ -1,5 +1,10 @@
 {
-  "name": "common",
+  "name": "@prompurr/common",
   "version": "1.0.0",
-  "dependencies": {}
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"yarn watch-ts\"",
+    "watch-ts": "tsc -w"
+  }
 }

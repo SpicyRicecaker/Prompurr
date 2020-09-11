@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="google-signin-client_id"
+      content="849836889695-5eom8uuudoo7ojh84cmd10m2k4l9idsl.apps.googleusercontent.com"
+    />
     <title>Prompurr</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
@@ -10,6 +16,11 @@
       href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://apis.google.com/js/platform.js?onload=initgapi"
+      async
+      defer
+    ></script>
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
   </head>
 
@@ -110,13 +121,20 @@
     <nav id="title-bar">
       <div class="left">
         <a href="" id="title-link">Prompurr</a>
-        <button id="save-data" class="data-buttons">Save &uarr;</button>
-        <button id="load-data" class="data-buttons">Load &darr;</button>
+        <!-- <button id="save-data" class="data-buttons">Save &uarr;</button>
+        <button id="load-data" class="data-buttons">Load &darr;</button> -->
       </div>
       <div class="center dropdown">
-        <button id="title-date-time">
-          <span id="title-date-time-label"></span> &#9660;
-        </button>
+        <div id="test">
+          <button id="title-date-time">
+            <span id="title-date-time-label"></span> &#9660;
+          </button>
+        </div>
+      </div>
+      <div class="right">
+        <!-- <a href="login.html" id="login-link">Login</a> -->
+        <button id="signout">Logout</button>
+        <div id="signin-button" class="g-signin2"></div>
       </div>
     </nav>
     <div id="wrapper">

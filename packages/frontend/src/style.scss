@@ -69,6 +69,16 @@ body {
   }
 }
 
+// #login-link {
+//   text-decoration: none;
+//   font-family: 'Open Sans', sans-serif;
+//   color: #434343;
+//   font-size: 0.7rem;
+//   &:hover {
+//     color: $munchingOrange;
+//   }
+// }
+
 #title-bar {
   background-color: $notGray;
   // Makes the title bar stay at the top of the page
@@ -88,6 +98,10 @@ body {
   flex: 1;
   @include flex-y;
   gap: 1rem;
+}
+
+.right {
+  @include flex-y;
 }
 
 #path-area {
@@ -239,7 +253,6 @@ body {
 }
 
 #title-date-time {
-  flex: 1;
   @extend .button-clear;
   // margin: 0;
   padding: 0 0.5rem;
@@ -259,6 +272,7 @@ body {
 .dropdown {
   position: relative;
   display: inline-block;
+  margin-top: 0.4rem;
 }
 
 .dropdown-content {
@@ -267,9 +281,21 @@ body {
   width: 100%;
 }
 
-.data-buttons {
+// .data-buttons {
+//   @extend .button-clear;
+//   padding: 0 0.5rem;
+//   font-family: 'Open Sans', monospace;
+//   font-size: 0.7rem;
+//   color: #434343;
+//   &:hover {
+//     cursor: pointer;
+//   }
+// }
+
+#signout {
+  display: none;
   @extend .button-clear;
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   font-family: 'Open Sans', monospace;
   font-size: 0.7rem;
   color: #434343;

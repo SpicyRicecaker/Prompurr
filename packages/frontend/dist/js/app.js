@@ -1,12 +1,9 @@
 "use strict";
-// What will happen is that we'll try to load user
-// data from a file in the server, but in the case
-// that a request is invalid / there is a new user,
-// we'll use a guest template instead
+let googleUser;
 let userData = {
     username: 'guest',
-    password: 'password',
-    id: 1,
+    id: 0,
+    email: 'guest@bobjoe.com',
     tasks: [],
 };
 // Cache of currently loaded tasks
@@ -480,32 +477,161 @@ document.getElementById('title-date-time').addEventListener('click', () => {
         document.getElementById('calendar-container').style.display = 'none';
     }
 });
-// On save we're looking to make a server request to write current data
-document.getElementById('save-data').addEventListener('click', () => {
-    flushCacheToUser().then(() => {
-        console.log(JSON.stringify(userData));
-        fetch(`/api/users/${userData.username}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-            },
-            body: JSON.stringify(userData),
+const updateUserData = (newUser) => {
+    userData.username = newUser.getName();
+    // OK changing this l8r dwdwdwdwdw
+    userData.id = newUser.getId();
+    userData.email = newUser.getEmail();
+};
+// // On save we're looking to make a server request to write current data
+// (document.getElementById('save-data') as HTMLButtonElement).addEventListener(
+//   'click',
+//   () => {
+//     flushCacheToUser().then(() => {
+//       fetch(`/api/users/${userData.username}`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json;charset=UTF-8',
+//         },
+//         body: JSON.stringify(userData),
+//       });
+//     });
+//   },
+// );
+// // On load we're looking to make a server request to load json data
+// (document.getElementById('load-data') as HTMLButtonElement).addEventListener(
+//   'click',
+//   () => {
+//     fetch(`/api/users/${userData.username}`)
+//       .then((res) => res.json())
+//       .then((data) => {
+//         userData = data;
+//         taskCache.forEach((value: task, key: HTMLDivElement) => {
+//           // Remove from dom
+//           key.remove();
+//           // Delete from cache
+//           taskCache.delete(key);
+//         });
+//         cacheUserTasks();
+//       })
+//       .catch((err) => console.log(err));
+//   },
+// );
+// function onSignIn(googleUser) {
+//   const profile = googleUser.getBasicProfile();
+//   console.log(`ID: ${profile.getId()}`); // Do not send to your backend! Use an ID token instead.
+//   console.log(`Name: ${profile.getName()}`);
+//   console.log(`Image URL: ${profile.getImageUrl()}`);
+//   console.log(`Email: ${profile.getEmail()}`); // This is null if the 'email' scope is not present.
+// }
+// (document.getElementById('signout') as HTMLLinkElement).addEventListener(
+//   'click',
+//   () => {
+//     const auth2 = gapi.auth2.getAuthInstance();
+//     auth2.signOut().then(() => {
+//       console.log('User signed out.');
+//     });
+//   },
+// );
+/**
+ * The Sign-In client object.
+ */
+/**
+ * Handle successful sign-ins.
+ */
+// const onSuccess = (GoogleUser: any) => {
+//   console.log(`Signed in as ${GoogleUser.getBasicProfile().getName()}`);
+// };
+/**
+ * Handle sign-in failures.
+ */
+// const onFailure = (error: any) => {
+//   console.log(error);
+// };
+/**
+ * Initializes Signin v2 and sets up listeners.
+ */
+let renderSignOut;
+let destroySignOut;
+const signOutListener = () => {
+    gapi.auth2
+        .getAuthInstance()
+        .then((auth2) => {
+        auth2.signOut();
+    })
+        .then(destroySignOut())
+        .then(console.log('user signed out lmao'));
+};
+renderSignOut = () => {
+    document.getElementById('signout').style.display =
+        'block';
+    document.getElementById('signout').addEventListener('click', signOutListener);
+};
+destroySignOut = () => {
+    document.getElementById('signout').style.display =
+        'hidden';
+    document.getElementById('signout').removeEventListener('click', signOutListener);
+};
+// const loadData = (username: string) => {
+//   fetch(`/api/users/${username}`)
+//     .then((res) => res.json())
+//     .then((data) => {
+//       userData = data;
+//       taskCache.forEach((value: task, key: HTMLDivElement) => {
+//         // Remove from dom
+//         key.remove();
+//         // Delete from cache
+//         taskCache.delete(key);
+//       });
+//       cacheUserTasks();
+//     })
+//     .catch((err) => console.log(err));
+// };
+function initgapi() {
+    gapi.load('auth2', () => {
+        gapi.auth2
+            .init({
+            client_id: '849836889695-5eom8uuudoo7ojh84cmd10m2k4l9idsl.apps.googleusercontent.com',
+        })
+            .then((auth2) => {
+            if (auth2.isSignedIn.get()) {
+                googleUser = auth2.currentUser.get();
+                const userProfile = googleUser.getBasicProfile();
+                // Update userdata
+                updateUserData(userProfile);
+                // Allow for sign out
+                renderSignOut();
+                // Check that the user exists
+                fetch(`/api/users/${userProfile.getName()}`)
+                    .then((res) => {
+                    // If res status is 404 then make a
+                    // post request
+                    if (res.status === 404) {
+                        flushCacheToUser().then(() => {
+                            fetch(`/api/users/${userProfile.getName()}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json;charset=UTF-8',
+                                },
+                                body: JSON.stringify(userData),
+                            });
+                        });
+                    }
+                    else if (res.status === 200) {
+                        res.json().then((data) => {
+                            userData = data;
+                            taskCache.forEach((value, key) => {
+                                // Remove from dom
+                                key.remove();
+                                // Delete from cache
+                                taskCache.delete(key);
+                            });
+                            cacheUserTasks();
+                        });
+                    }
+                })
+                    .catch((err) => console.log(err));
+            }
         });
     });
-});
-// On load we're looking to make a server request to load json data
-document.getElementById('load-data').addEventListener('click', () => {
-    fetch(`/api/users/${userData.username}`)
-        .then((res) => res.json())
-        .then((data) => {
-        userData = data;
-        taskCache.forEach((value, key) => {
-            // Remove from dom
-            key.remove();
-            // Delete from cache
-            taskCache.delete(key);
-        });
-        cacheUserTasks();
-    })
-        .catch((err) => console.log(err));
-});
+}

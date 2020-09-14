@@ -1,8 +1,6 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "@tsconfig/svelte/tsconfig.json",
 
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist/js"
-  }
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
 }

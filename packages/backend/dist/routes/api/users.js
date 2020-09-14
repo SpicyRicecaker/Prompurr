@@ -1,67 +1,130 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const prompurrDB = __importStar(require("../../db"));
+const userColl = () => new Promise((resolve) => {
+    resolve(prompurrDB.get().db('prompurrDB').collection('users'));
+});
 const router = express_1.default.Router();
 // Gets all users
 router.get('/', (req, res) => {
-    res.json(members);
+    userColl()
+        .then((data) => data.find({}))
+        .then((data) => data.toArray())
+        .then((data) => res.status(200).json(data))
+        .catch((err) => {
+        console.log(err);
+        res.status(500).json({ msg: 'Internal server error sorry' });
+    });
 });
 // Return a specific user with specific username
-router.get('/:username', (req, res) => {
-    const resMsg = { code: 404, msg: 'User not found.' };
-    for (let i = 0; i < members.length; i += 1) {
-        if (members[i].username === req.params.username) {
-            res.status(200).json(members[i]);
+router.get('/:username', async (req, res) => {
+    try {
+        const collection = await userColl();
+        const cursor = await collection.find({ username: req.params.username });
+        if (await cursor.hasNext()) {
+            return res.status(200).json(await cursor.next());
         }
+        return res.status(404).json({ msg: "Couldn't find user!" });
     }
-    res.status(404).json(resMsg);
+    catch (err) {
+        return res.status(500).json({ msg: 'Internal Server Error' });
+    }
 });
 // Update a specific user with specific username
-router.put('/:username', (req, res) => {
-    // Updates a old user with new user details
-    // Data(newUser), oldUserIndex
-    const updateMember = (newUser, i) => {
-        // First we have to check if the values exist tho
-        members[i].username = newUser.username
-            ? newUser.username
-            : members[i].username;
-        members[i].id = newUser.id ? newUser.id : members[i].id;
-        members[i].email = newUser.email ? newUser.email : members[i].email;
-        members[i].tasks = newUser.tasks ? newUser.tasks : members[i].tasks;
-    };
-    const data = req.body;
-    const resMsg = { code: 404, msg: 'User not found.' };
-    // To find a user, loop through userlist
-    for (let i = 0; i < members.length; i += 1) {
-        // If the user matches
-        if (members[i].id === parseInt(data.id, 10)) {
-            // Update the member to match
-            updateMember(data, i);
-            // Then update our end code (maybe message too?)
-            resMsg.code = 200;
-            resMsg.msg = 'User updated successfully';
+router.put('/:username', async (req, res) => {
+    const query = { username: req.params.username };
+    let queriedUser;
+    try {
+        const collection = await userColl();
+        const cursor = await collection.find(query);
+        if (await cursor.hasNext()) {
+            queriedUser = await cursor.next();
         }
+        else {
+            return res.status(404).json({ msg: "Couldn't find user!" });
+        }
+        // Do some checking here
+        const updateUser = {
+            $set: {
+                username: req.body.username ? req.body.username : queriedUser.username,
+                id: req.body.id ? req.body.id : queriedUser.id,
+                email: req.body.email ? req.body.email : queriedUser.email,
+                tasks: req.body.tasks ? req.body.tasks : queriedUser.tasks,
+            },
+        };
+        // Put updated values in
+        await collection.updateOne(query, updateUser);
+        return res.status(200).json({ msg: 'Successfully updated user' });
     }
-    res.status(resMsg.code).json(resMsg);
+    catch (err) {
+        return res.status(500).json({ msg: 'Internal Server Error' });
+    }
 });
 // Create a specifc user, later
 // router.post();
-router.post('/:username', (req, res) => {
-    const data = req.body;
-    const newUser = {
-        username: data.username,
-        id: data.id,
-        email: data.email,
-        tasks: data.tasks,
-    };
-    if (!newUser.username && !newUser.email) {
-        return res.status(400).json({ msg: 'No username and email' });
+router.post('/:username', async (req, res) => {
+    try {
+        const collection = await userColl();
+        const cursor = await collection.find({ username: req.params.username });
+        if (await cursor.hasNext()) {
+            return res.status(400).json({ msg: 'User already exists' });
+        }
+        // Do some checking here
+        const newUser = {
+            username: req.body.username,
+            id: req.body.id,
+            email: req.body.email,
+            tasks: req.body.tasks,
+        };
+        if (newUser.username && newUser.email) {
+            // Put updated values in
+            await collection.insertOne(newUser);
+            return res.status(200).json({ msg: 'Successfully created new user' });
+        }
+        return res.status(400).json({ msg: 'Please include a username and email' });
     }
-    return res.status(200).send();
+    catch (err) {
+        return res.status(500).json({ msg: 'Internal Server Error' });
+    }
+});
+router.delete('/:username', async (req, res) => {
+    try {
+        const collection = await userColl();
+        const deleteResult = await collection.deleteOne({
+            username: req.params.username,
+        });
+        if (deleteResult.deletedCount === 0) {
+            return res.status(400).json({ msg: 'User was not found' });
+        }
+        return res.status(200).json({ msg: 'Successuflly deleted user' });
+    }
+    catch (err) {
+        return res.status(500).json({ msg: 'Internal Server Error' });
+    }
 });
 // Return a specific user with specific id
 // Implement this later if needed
-module.exports = router;
+exports.default = router;
